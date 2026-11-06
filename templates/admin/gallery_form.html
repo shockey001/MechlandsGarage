@@ -1,0 +1,39 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Add Gallery Item — Mechlands Admin{% endblock %}
+{% block page_title %}Add Gallery Item{% endblock %}
+
+{% block content %}
+
+<div class="admin-note">
+    <strong>Reminder:</strong> Upload the image file to <code>static/images/gallery/</code> on your server first, then enter the filename below.
+</div>
+
+<form method="POST" class="admin-form">
+    {{ form.hidden_tag() }}
+
+    <div class="admin-form-group">
+        {{ form.image.label }}
+        {{ form.image(class="admin-input", placeholder="e.g. engine-rebuild-01.jpg") }}
+        <small class="admin-help">The exact filename as it appears in the gallery folder.</small>
+        {% for e in form.image.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+    </div>
+
+    <div class="admin-form-group">
+        {{ form.caption.label }}
+        {{ form.caption(class="admin-input", placeholder="Short description") }}
+        {% for e in form.caption.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+    </div>
+
+    <div class="admin-form-group">
+        {{ form.category.label }}
+        {{ form.category(class="admin-input") }}
+    </div>
+
+    <div class="admin-form-actions">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('admin_gallery') }}" class="btn btn-outline" style="color: #1B2A4A; border-color: #1B2A4A;">Cancel</a>
+    </div>
+</form>
+
+{% endblock %}

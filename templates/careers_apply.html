@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Apply — {{ position.title }} — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Apply: {{ position.title }}</h1>
+        <p class="page-sub">
+            {{ position.department }} · {{ position.type }} · {{ position.location }}
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container contact-layout">
+
+        <!-- SIDE INFO -->
+        <div class="contact-info">
+            <h2>About This Role</h2>
+            <p>{{ position.description }}</p>
+
+            <div class="info-block">
+                <div class="info-label">📋 Requirements</div>
+                <ul class="position-requirements" style="margin-top: 10px;">
+                    {% for req in position.requirements %}
+                        <li>{{ req }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">📝 How to Apply</div>
+                <div class="info-value">Fill in the form with your details and a short cover message. We'll review and contact shortlisted candidates by phone or email.</div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">💬 Questions</div>
+                <div class="info-value">If you have any questions before applying, <a href="{{ url_for('contact') }}" style="color: #00A3FF;">contact us</a>.</div>
+            </div>
+        </div>
+
+        <!-- APPLICATION FORM -->
+        <div class="contact-form-wrapper">
+            <h2>Your Application</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('careers_apply', position_slug=position.slug) }}" class="contact-form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-input", placeholder="Your full name") }}
+                    {% for error in form.name.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class="form-input", placeholder="you@example.com") }}
+                    {% for error in form.email.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.phone.label }}
+                    {{ form.phone(class="form-input", placeholder="+254 ...") }}
+                    {% for error in form.phone.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.position.label }}
+                    {{ form.position(class="form-input") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.experience.label }}
+                    {{ form.experience(class="form-input", placeholder="e.g. 3 years automotive electrical") }}
+                    {% for error in form.experience.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.message.label }}
+                    {{ form.message(class="form-input", rows="7", placeholder="Tell us why you're interested and what you'd bring to Mechlands Garage.") }}
+                    {% for error in form.message.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+                </div>
+
+                {{ form.submit(class="btn btn-primary form-submit") }}
+            </form>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

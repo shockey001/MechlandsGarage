@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Investor Inquiry — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+    <div class="container">
+        <h1>Investor Inquiry</h1>
+        <p class="page-sub">
+            Tell us a little about your interest — we'll respond personally.
+        </p>
+    </div>
+</section>
+
+<!-- FORM SECTION -->
+<section class="service-section">
+    <div class="container contact-layout">
+
+        <!-- SIDE INFO -->
+        <div class="contact-info">
+            <h2>Why Reach Out</h2>
+            <p>Whether you're exploring, considering, or ready to move — this form gives us what we need to have a useful first conversation.</p>
+
+            <div class="info-block">
+                <div class="info-label">💬 Ask Questions</div>
+                <div class="info-value">Anything about the business plan, financials, or technical roadmap.</div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">🤝 Discuss Structure</div>
+                <div class="info-value">Equity, profit-sharing, loans — we're open to structures that work for both sides.</div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">📅 Request a Meeting</div>
+                <div class="info-value">We're happy to walk you through the plan in person or by video call.</div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">📄 Full Business Plan</div>
+                <div class="info-value">Available on request after initial contact. <a href="{{ url_for('business_plan') }}" style="color: #00A3FF;">Preview the plan →</a></div>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="contact-form-wrapper">
+            <h2>Investor Inquiry Form</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('investor_inquiry') }}" class="contact-form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-input", placeholder="Your full name") }}
+                    {% for error in form.name.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class="form-input", placeholder="you@example.com") }}
+                    {% for error in form.email.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.phone.label }}
+                    {{ form.phone(class="form-input", placeholder="+254 ...") }}
+                    {% for error in form.phone.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.investor_type.label }}
+                    {{ form.investor_type(class="form-input") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.interest_level.label }}
+                    {{ form.interest_level(class="form-input") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.amount_range.label }}
+                    {{ form.amount_range(class="form-input") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.question.label }}
+                    {{ form.question(class="form-input", rows="6", placeholder="What would you like to know or discuss?") }}
+                    {% for error in form.question.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                {{ form.submit(class="btn btn-primary form-submit") }}
+            </form>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

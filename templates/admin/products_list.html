@@ -1,0 +1,50 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Products — Mechlands Admin{% endblock %}
+{% block page_title %}Products Manager{% endblock %}
+
+{% block content %}
+
+<div class="admin-toolbar">
+    <a href="{{ url_for('admin_products_new') }}" class="btn btn-primary">+ New Product</a>
+</div>
+
+{% if products %}
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price (KES)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td><code>{{ product.sku }}</code></td>
+                    <td><strong>{{ product.name }}</strong></td>
+                    <td><span class="admin-pill category-{{ product.category }}">{{ product.category }}</span></td>
+                    <td>
+                        {% if product.price %}
+                            {{ "{:,}".format(product.price) }}
+                        {% else %}
+                            <em>Request Price</em>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin_products_edit', product_id=product.id) }}" class="admin-btn">Edit</a>
+                        <form method="POST" action="{{ url_for('admin_products_delete', product_id=product.id) }}" style="display:inline" onsubmit="return confirm('Delete this product?');">
+                            <button type="submit" class="admin-btn danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="admin-empty"><p>No products yet.</p></div>
+{% endif %}
+
+{% endblock %}

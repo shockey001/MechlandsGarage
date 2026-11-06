@@ -1,0 +1,118 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Submissions — Mechlands Admin{% endblock %}
+{% block page_title %}Submissions{% endblock %}
+
+{% block content %}
+
+<div class="admin-filter-bar">
+    <span class="admin-filter-label">Filter:</span>
+    <a href="{{ url_for('admin_submissions') }}" class="admin-filter-pill {% if not filter_type %}active{% endif %}">All</a>
+    <a href="{{ url_for('admin_submissions', type='contact') }}" class="admin-filter-pill {% if filter_type == 'contact' %}active{% endif %}">Contact</a>
+    <a href="{{ url_for('admin_submissions', type='investor_inquiry') }}" class="admin-filter-pill {% if filter_type == 'investor_inquiry' %}active{% endif %}">Investor</a>
+    <a href="{{ url_for('admin_submissions', type='shop_order') }}" class="admin-filter-pill {% if filter_type == 'shop_order' %}active{% endif %}">Shop Orders</a>
+    <a href="{{ url_for('admin_submissions', type='job_application') }}" class="admin-filter-pill {% if filter_type == 'job_application' %}active{% endif %}">Jobs</a>
+    <a href="{{ url_for('admin_submissions', type= 'cars') }}" class="admin-filter-pill {% if filter_type == 'cars' %}active{%endif %}">Cars</a>
+</div>
+
+{% if submissions %}
+    <div class="admin-submission-list">
+        {% for s in submissions %}
+            <div class="admin-submission-card">
+                <div class="admin-submission-head">
+                    <div>
+                        <span class="admin-submission-type type-{{ s.get('type', 'contact') }}">
+                            {{ s.get('type', 'contact')|replace('_', ' ')|title }}
+                        </span>
+                        <span class="admin-submission-date">{{ s.get('timestamp', '')[:19]|replace('T', ' ') }}</span>
+                    </div>
+                </div>
+                <div class="admin-submission-body">
+                    <div class="admin-submission-row">
+                        <span class="admin-submission-label">From:</span>
+                        <span>{{ s.get('name', '—') }} &lt;{{ s.get('email', '—') }}&gt;</span>
+                    </div>
+                    {% if s.get('phone') %}
+                    <div class="admin-submission-row">
+                        <span class="admin-submission-label">Phone:</span>
+                        <span>{{ s.get('phone') }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if s.get('type') == 'shop_order' %}
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Delivery:</span>
+                            <span>{{ s.get('delivery', '—') }}</span>
+                        </div>
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Items:</span>
+                            <span class="admin-submission-message">{{ s.get('items', '—') }}</span>
+                        </div>
+                        {% if s.get('notes') %}
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Notes:</span>
+                            <span class="admin-submission-message">{{ s.get('notes') }}</span>
+                        </div>
+                        {% endif %}
+
+                    {% elif s.get('type') == 'investor_inquiry' %}
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Investor Type:</span>
+                            <span>{{ s.get('investor_type', '—') }}</span>
+                        </div>
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Interest:</span>
+                            <span>{{ s.get('interest_level', '—') }}</span>
+                        </div>
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Amount:</span>
+                            <span>{{ s.get('amount_range', '—') }}</span>
+                        </div>
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Message:</span>
+                            <span class="admin-submission-message">{{ s.get('question', '—') }}</span>
+                        </div>
+
+                    {% elif s.get('type') == 'job_application' %}
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Position:</span>
+                            <span>{{ s.get('position_title', s.get('position', '—')) }}</span>
+                        </div>
+                        {% if s.get('experience') %}
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Experience:</span>
+                            <span>{{ s.get('experience') }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Message:</span>
+                            <span class="admin-submission-message">{{ s.get('message', '—') }}</span>
+                        </div>
+
+                    {% else %}
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Service:</span>
+                            <span>{{ s.get('service', '—') }}</span>
+                        </div>
+                        <div class="admin-submission-row">
+                            <span class="admin-submission-label">Message:</span>
+                            <span class="admin-submission-message">{{ s.get('message', '—') }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="admin-submission-actions">
+                    <a href="mailto:{{ s.get('email', '') }}" class="admin-btn">Reply by Email</a>
+                    {% if s.get('phone') %}
+                        <a href="https://wa.me/{{ s.get('phone', '')|replace('+', '')|replace(' ', '') }}" target="_blank" class="admin-btn">WhatsApp</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="admin-empty">
+        <p>No submissions yet{% if filter_type %} of type <strong>{{ filter_type }}</strong>{% endif %}.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

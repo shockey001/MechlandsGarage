@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Cars for Sale — Mechlands Garage{% endblock %}
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Cars for Sale</h1>
+        <p class="page-sub">Carefully inspected vehicles from Mechlands Garage and trusted partners.</p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        {% if vehicles %}
+            <div class="vehicle-grid">
+                {% for v in vehicles %}
+                    <div class="vehicle-card">
+                        <div class="vehicle-image" style="background-image: url('{{ v.image_url or url_for('static', filename='images/placeholder-car.jpg') }}');">
+                            <span class="vehicle-status">{{ v.status|title }}</span>
+                        </div>
+                        <div class="vehicle-info">
+                            <h3>{{ v.title }}</h3>
+                            <div class="vehicle-meta">
+                                <span>{{ v.year }}</span> • <span>{{ "{:,}".format(v.mileage) }} km</span> • <span>{{ v.transmission }}</span>
+                            </div>
+                            <div class="vehicle-price">KES {{ "{:,}".format(v.price) }}</div>
+<!--                            <a href="{{ url_for('contact') }}?subject=Inquiry%20about%20{{ v.title|urlencode }}" class="btn btn-primary" style="width: 100%; text-align: center; margin-top: 15px;">Inquire Now</a>-->
+                            <a href="{{ url_for('contact', category='car_sales', subject='I am interested in the ' + v.title + ' (' + v.year|string + '). Please send me more details.') }}" class="btn btn-primary" style="width: 100%; text-align: center; margin-top: 15px;">Inquire Now</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="admin-empty">
+                <h2>No vehicles currently available.</h2>
+                <p>Check back soon or contact us to request a specific vehicle.</p>
+
+                <a href="{{ url_for('contact') }}" class="btn btn-primary" style="margin-top: 15px;">Request a Vehicle</a>
+
+
+
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

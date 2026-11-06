@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Events — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Events</h1>
+        <p class="page-sub">
+            Open days, workshops, and gatherings — come see what we do.
+        </p>
+    </div>
+</section>
+
+<!-- UPCOMING -->
+<section class="service-section">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">📅</div>
+            <div>
+                <h2>Upcoming Events</h2>
+                <p class="section-intro">Mark your calendar — all are welcome unless noted.</p>
+            </div>
+        </div>
+
+        {% if upcoming %}
+            <div class="event-list">
+                {% for event in upcoming %}
+                    <div class="event-card upcoming">
+                        <div class="event-date">
+                            <span class="event-day">{{ event.date[8:10] }}</span>
+                            <span class="event-month">
+                                {% set month_num = event.date[5:7] %}
+                                {% if month_num == '01' %}JAN
+                                {% elif month_num == '02' %}FEB
+                                {% elif month_num == '03' %}MAR
+                                {% elif month_num == '04' %}APR
+                                {% elif month_num == '05' %}MAY
+                                {% elif month_num == '06' %}JUN
+                                {% elif month_num == '07' %}JUL
+                                {% elif month_num == '08' %}AUG
+                                {% elif month_num == '09' %}SEP
+                                {% elif month_num == '10' %}OCT
+                                {% elif month_num == '11' %}NOV
+                                {% else %}DEC{% endif %}
+                            </span>
+                            <span class="event-year">{{ event.date[0:4] }}</span>
+                        </div>
+                        <div class="event-info">
+                            <h3>{{ event.title }}</h3>
+                            <p class="event-location">📍 {{ event.location }}</p>
+                            <p>{{ event.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No upcoming events scheduled. Check back soon.</p>
+        {% endif %}
+    </div>
+</section>
+
+<!-- PAST -->
+<section class="service-section alt">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">📁</div>
+            <div>
+                <h2>Past Events</h2>
+                <p class="section-intro">A look back at what we've done.</p>
+            </div>
+        </div>
+
+        {% if past %}
+            <div class="event-list">
+                {% for event in past %}
+                    <div class="event-card past">
+                        <div class="event-date">
+                            <span class="event-day">{{ event.date[8:10] }}</span>
+                            <span class="event-month">
+                                {% set month_num = event.date[5:7] %}
+                                {% if month_num == '01' %}JAN
+                                {% elif month_num == '02' %}FEB
+                                {% elif month_num == '03' %}MAR
+                                {% elif month_num == '04' %}APR
+                                {% elif month_num == '05' %}MAY
+                                {% elif month_num == '06' %}JUN
+                                {% elif month_num == '07' %}JUL
+                                {% elif month_num == '08' %}AUG
+                                {% elif month_num == '09' %}SEP
+                                {% elif month_num == '10' %}OCT
+                                {% elif month_num == '11' %}NOV
+                                {% else %}DEC{% endif %}
+                            </span>
+                            <span class="event-year">{{ event.date[0:4] }}</span>
+                        </div>
+                        <div class="event-info">
+                            <h3>{{ event.title }}</h3>
+                            <p class="event-location">📍 {{ event.location }}</p>
+                            <p>{{ event.description }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No past events to display.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

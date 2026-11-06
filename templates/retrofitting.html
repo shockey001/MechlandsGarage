@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}EV Retrofitting & Conversion — Mechlands Garage{% endblock %}
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero" style="background: linear-gradient(rgba(27, 42, 74, 0.9), rgba(27, 42, 74, 0.9)), url('{{ url_for('static', filename='images/ev-bg.jpg') }}') center/cover;">
+    <div class="container">
+        <h1>Turn Your Petrol Car Into an EV.</h1>
+        <p class="hero-sub">
+            Keep the car you love. Ditch the fuel pump. We engineer premium, safe, and reliable ICE-to-EV conversions right here in Kenya.
+        </p>
+        <div class="hero-buttons">
+<!--            <a href="{{ url_for('contact') }}" class="btn btn-primary">Book a Feasibility Assessment</a>-->
+            <a href="{{ url_for('contact', category='retrofitting', subject='I would like to book a feasibility assessment for an EV conversion.') }}" class="btn btn-primary">Book a Feasibility Assessment</a>
+
+            <a href="#how-it-works" class="btn btn-outline">How It Works</a>
+        </div>
+    </div>
+</section>
+
+<!-- THE PROBLEM -->
+<section class="service-section">
+    <div class="container" style="text-align: center; max-width: 800px;">
+        <h2 class="section-title">Why Retrofit Instead of Buy New?</h2>
+        <p style="font-size: 1.1rem; color: #555; line-height: 1.8;">
+            Importing a new electric vehicle to Kenya costs millions. But what if you could get the EV driving experience for a fraction of the price?
+            <br><br>
+            Retrofitting removes the combustion engine and replaces it with an electric motor and battery pack. You save on fuel, drastically reduce maintenance, and drive one of the cleanest vehicles on the road—without buying a new car.
+        </p>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="service-section alt" id="how-it-works">
+    <div class="container">
+        <h2 class="section-title">The Conversion Process</h2>
+        <div class="pillar-grid">
+            <div class="pillar-card">
+                <div class="pillar-icon">1️⃣</div>
+                <h3>Feasibility Check</h3>
+                <p>We inspect your vehicle's chassis, weight distribution, and condition to ensure it is a safe candidate for conversion.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">2️⃣</div>
+                <h3>Design & Sourcing</h3>
+                <p>We select the right motor and battery size based on your daily driving needs (range) and your budget.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">3️⃣</div>
+                <h3>Engineering</h3>
+                <p>Out with the old (engine, exhaust, fuel tank). In with the new (motor, controller, battery pack, charger).</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">4️⃣</div>
+                <h3>Testing & Handover</h3>
+                <p>Rigorous road testing, safety checks on high-voltage systems, and final handover with a charging guide.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRICING PACKAGES -->
+<section class="service-section">
+    <div class="container">
+        <h2 class="section-title">Conversion Packages</h2>
+        <div class="service-grid">
+            <div class="service-item" style="border-top: 4px solid #00A3FF;">
+                <h4>City Commuter</h4>
+                <p>Best for small sedans (e.g., Toyota Axio, Nissan Note). Designed for daily Nairobi driving.</p>
+                <ul class="phase-list">
+                    <li>~150km Real-world Range</li>
+                    <li>20 kWh Battery Pack</li>
+                    <li>Standard AC Charging</li>
+                </ul>
+                <div class="price-tag" style="margin-top: auto;">Request Quote</div>
+            </div>
+
+            <div class="service-item" style="border-top: 4px solid #1B2A4A; background: #F5F7FA;">
+                <h4>Extended Range</h4>
+                <p>Best for SUVs and crossovers. Gives you the freedom to travel between counties.</p>
+                <ul class="phase-list">
+                    <li>~250km Real-world Range</li>
+                    <li>35 kWh Battery Pack</li>
+                    <li>Fast Charging Capability</li>
+                </ul>
+                <div class="price-tag" style="margin-top: auto;">Request Quote</div>
+            </div>
+
+            <div class="service-item" style="border-top: 4px solid #2ecc71;">
+                <h4>Custom / Performance</h4>
+                <p>For classic cars, pickups, or enthusiasts wanting maximum torque and range.</p>
+                <ul class="phase-list">
+                    <li>Custom Range (300km+)</li>
+                    <li>High-Performance Motor</li>
+                    <li>Bespoke Battery Engineering</li>
+                </ul>
+                <div class="price-tag" style="margin-top: auto;">Request Quote</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="service-section alt">
+    <div class="container" style="max-width: 800px;">
+        <h2 class="section-title">Common Questions</h2>
+
+        <div style="margin-bottom: 25px;">
+            <h4 style="color: #1B2A4A; font-size: 1.1rem; margin-bottom: 8px;">Is it legal in Kenya?</h4>
+            <p style="color: #555;">Yes. Conversions are treated as vehicle modifications. We work with you to ensure the vehicle passes NTSA inspection and is properly registered as electric.</p>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <h4 style="color: #1B2A4A; font-size: 1.1rem; margin-bottom: 8px;">How long does it take?</h4>
+            <p style="color: #555;">A standard conversion takes between 4 to 8 weeks depending on the complexity of the vehicle and the sourcing of parts.</p>
+        </div>
+
+        <div style="margin-bottom: 25px;">
+            <h4 style="color: #1B2A4A; font-size: 1.1rem; margin-bottom: 8px;">What happens to my old engine?</h4>
+            <p style="color: #555;">We can either buy the old engine from you (to offset costs) or dispose of it responsibly according to environmental regulations.</p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+<!--            <a href="{{ url_for('contact') }}" class="btn btn-primary">Start Your Conversion Journey</a>-->
+
+            <a href="{{ url_for('contact', category='retrofitting', subject='I am interested in starting an EV conversion. Please contact me.') }}" class="btn btn-primary">Start Your Conversion Journey</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

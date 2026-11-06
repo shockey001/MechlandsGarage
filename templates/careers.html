@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Careers — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Careers</h1>
+        <p class="page-sub">
+            Join a workshop that's building the future of automotive engineering in Kenya.
+        </p>
+    </div>
+</section>
+
+<!-- WHY WORK HERE -->
+<section class="service-section">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">💼</div>
+            <div>
+                <h2>Why Work at Mechlands Garage</h2>
+                <p class="section-intro">What makes this different from other workshops.</p>
+            </div>
+        </div>
+
+        <div class="pillar-grid">
+            <div class="pillar-card">
+                <div class="pillar-icon">🔧</div>
+                <h3>Real Engineering Work</h3>
+                <p>You'll diagnose, design, and build — not just swap parts. Every job is a chance to learn something new.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">⚡</div>
+                <h3>EV Skills Training</h3>
+                <p>High-voltage systems, battery management, motor controllers. Skills that will define the next decade of the industry.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">📈</div>
+                <h3>Growth Opportunity</h3>
+                <p>We're small now — early team members grow with the business. Real responsibility from day one.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OPEN POSITIONS -->
+<section class="service-section alt">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">📢</div>
+            <div>
+                <h2>Open Positions</h2>
+                <p class="section-intro">Current openings — apply directly from this page.</p>
+            </div>
+        </div>
+
+        {% if positions %}
+            <div class="position-list">
+                {% for position in positions %}
+                    <div class="position-card">
+                        <div class="position-header">
+                            <div>
+                                <h3>{{ position.title }}</h3>
+                                <div class="position-meta">
+                                    <span class="position-tag">{{ position.department }}</span>
+                                    <span class="position-tag">{{ position.type }}</span>
+                                    <span class="position-location">📍 {{ position.location }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p>{{ position.description }}</p>
+
+                        <h4>Requirements</h4>
+                        <ul class="position-requirements">
+                            {% for req in position.requirements %}
+                                <li>{{ req }}</li>
+                            {% endfor %}
+                        </ul>
+
+                        <a href="{{ url_for('careers_apply', position_slug=position.slug) }}" class="btn btn-primary">
+                            Apply for This Position
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="careers-empty">
+                <p>We don't have any open positions at the moment.</p>
+                <p>However, we're always interested in hearing from talented automotive technicians and EV specialists.</p>
+                <a href="{{ url_for('contact') }}" class="btn btn-primary">Send Us Your Details</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="container">
+        <h2>Not seeing the right role?</h2>
+        <p>We keep good applications on file. Reach out and tell us what you'd bring to Mechlands Garage.</p>
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">Contact Us</a>
+    </div>
+</section>
+
+{% endblock %}

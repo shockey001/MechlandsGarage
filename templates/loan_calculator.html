@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Loan Calculator — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Loan Calculator</h1>
+        <p class="page-sub">
+            Work out your monthly payment, total interest, and total cost of financing a vehicle.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="calculator-layout">
+
+            <!-- INPUTS -->
+            <div class="calculator-inputs">
+                <h2>Your Loan Details</h2>
+
+                <div class="form-group">
+                    <label for="price">Vehicle Price (KES)</label>
+                    <input type="number" id="price" class="form-input" value="1500000" min="0" step="1000">
+                </div>
+
+                <div class="form-group">
+                    <label for="down">Down Payment (KES)</label>
+                    <input type="number" id="down" class="form-input" value="300000" min="0" step="1000">
+                    <small class="calc-help" id="down-percent-hint"></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="rate">Annual Interest Rate (%)</label>
+                    <select id="rate" class="form-input">
+                        <option value="12">12% (Bank — best tier)</option>
+                        <option value="14" selected>14% (Bank — typical)</option>
+                        <option value="16">16% (Bank — higher risk)</option>
+                        <option value="18">18% (SACCO / microfinance)</option>
+                        <option value="21">21% (Higher-risk lender)</option>
+                        <option value="custom">Custom — enter below</option>
+                    </select>
+                    <input type="number" id="rate-custom" class="form-input" value="14" min="0" step="0.1" style="margin-top: 10px; display: none;">
+                    <small class="calc-help">Market range in Kenya: 12% – 21% depending on lender and risk.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="months">Loan Term</label>
+                    <select id="months" class="form-input">
+                        <option value="12">12 months (1 year)</option>
+                        <option value="24">24 months (2 years)</option>
+                        <option value="36" selected>36 months (3 years)</option>
+                        <option value="48">48 months (4 years)</option>
+                        <option value="60">60 months (5 years)</option>
+                        <option value="72">72 months (6 years)</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- RESULTS -->
+            <div class="calculator-results">
+                <h2>Your Estimate</h2>
+
+                <div class="calc-result-block primary">
+                    <div class="calc-result-label">Monthly Payment</div>
+                    <div class="calc-result-value" id="monthly-payment">—</div>
+                </div>
+
+                <div class="calc-result-grid">
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Loan Amount</div>
+                        <div class="calc-result-value small" id="loan-amount">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Total Interest</div>
+                        <div class="calc-result-value small" id="total-interest">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Total Cost</div>
+                        <div class="calc-result-value small" id="total-cost">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Interest as % of Loan</div>
+                        <div class="calc-result-value small" id="interest-ratio">—</div>
+                    </div>
+                </div>
+
+                <div class="calc-note">
+                    Estimates are indicative only. Actual terms depend on your lender.
+                </div>
+
+                <a href="{{ url_for('contact') }}" class="btn btn-primary" style="width: 100%; text-align: center; margin-top: 20px;">
+                    Discuss Financing With Us
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const price = document.getElementById('price');
+    const down = document.getElementById('down');
+    const rateSelect = document.getElementById('rate');
+    const rateCustom = document.getElementById('rate-custom');
+    const months = document.getElementById('months');
+
+    const downHint = document.getElementById('down-percent-hint');
+    const monthlyEl = document.getElementById('monthly-payment');
+    const loanEl = document.getElementById('loan-amount');
+    const interestEl = document.getElementById('total-interest');
+    const costEl = document.getElementById('total-cost');
+    const ratioEl = document.getElementById('interest-ratio');
+
+    function formatKES(n) {
+        if (!isFinite(n)) return '—';
+        return 'KES ' + Math.round(n).toLocaleString('en-KE');
+    }
+
+    function getRate() {
+        if (rateSelect.value === 'custom') {
+            return parseFloat(rateCustom.value) || 0;
+        }
+        return parseFloat(rateSelect.value) || 0;
+    }
+
+    function calculate() {
+        const p = parseFloat(price.value) || 0;
+        const d = parseFloat(down.value) || 0;
+        const annualRate = getRate();
+        const n = parseInt(months.value) || 12;
+
+        const loanAmount = Math.max(p - d, 0);
+        const monthlyRate = (annualRate / 100) / 12;
+
+        let monthlyPayment = 0;
+        let totalPaid = 0;
+
+        if (loanAmount === 0) {
+            monthlyPayment = 0;
+            totalPaid = 0;
+        } else if (monthlyRate === 0) {
+            monthlyPayment = loanAmount / n;
+            totalPaid = loanAmount;
+        } else {
+            const factor = Math.pow(1 + monthlyRate, n);
+            monthlyPayment = loanAmount * (monthlyRate * factor) / (factor - 1);
+            totalPaid = monthlyPayment * n;
+        }
+
+        const totalInterest = totalPaid - loanAmount;
+        const interestRatio = loanAmount > 0 ? (totalInterest / loanAmount) * 100 : 0;
+        const downPercent = p > 0 ? (d / p) * 100 : 0;
+
+        monthlyEl.textContent = formatKES(monthlyPayment);
+        loanEl.textContent = formatKES(loanAmount);
+        interestEl.textContent = formatKES(totalInterest);
+        costEl.textContent = formatKES(totalPaid);
+        ratioEl.textContent = interestRatio.toFixed(1) + '%';
+        downHint.textContent = p > 0 ? downPercent.toFixed(1) + '% of vehicle price' : '';
+    }
+
+    rateSelect.addEventListener('change', function () {
+        if (rateSelect.value === 'custom') {
+            rateCustom.style.display = 'block';
+        } else {
+            rateCustom.style.display = 'none';
+        }
+        calculate();
+    });
+
+    [price, down, rateCustom, months].forEach(el => {
+        el.addEventListener('input', calculate);
+        el.addEventListener('change', calculate);
+    });
+
+    calculate();
+})();
+</script>
+
+{% endblock %}

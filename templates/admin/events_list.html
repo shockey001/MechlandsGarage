@@ -1,0 +1,38 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Events — Mechlands Admin{% endblock %}
+{% block page_title %}Events Manager{% endblock %}
+
+{% block content %}
+
+<div class="admin-toolbar">
+    <a href="{{ url_for('admin_events_new') }}" class="btn btn-primary">+ New Event</a>
+</div>
+
+{% if events %}
+    <table class="admin-table">
+        <thead>
+            <tr><th>Title</th><th>Date</th><th>Status</th><th>Location</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td><strong>{{ event.title }}</strong></td>
+                    <td>{{ event.date }}</td>
+                    <td><span class="admin-pill {{ event.status }}">{{ event.status }}</span></td>
+                    <td>{{ event.location }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_events_edit', event_id=event.id) }}" class="admin-btn">Edit</a>
+                        <form method="POST" action="{{ url_for('admin_events_delete', event_id=event.id) }}" style="display:inline" onsubmit="return confirm('Delete this event?');">
+                            <button type="submit" class="admin-btn danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="admin-empty"><p>No events yet.</p></div>
+{% endif %}
+
+{% endblock %}

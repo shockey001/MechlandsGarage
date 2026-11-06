@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Shop — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Shop</h1>
+        <p class="page-sub">
+            Auto spares, tools, and accessories — sourced and shipped across Kenya.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">🛒</div>
+            <div>
+                <h2>Browse by Category</h2>
+                <p class="section-intro">Three categories — hundreds of items. Add to your order request and we'll follow up.</p>
+            </div>
+        </div>
+
+        <div class="shop-category-grid">
+
+            <a href="{{ url_for('shop_category', category='spares') }}" class="shop-category-card">
+                <div class="shop-category-icon">🔩</div>
+                <h3>Spares</h3>
+                <p>Filters, brake pads, spark plugs, batteries — consumables and replacement parts for common vehicles.</p>
+                <span class="shop-category-link">Browse Spares →</span>
+            </a>
+
+            <a href="{{ url_for('shop_category', category='tools') }}" class="shop-category-card">
+                <div class="shop-category-icon">🛠️</div>
+                <h3>Tools</h3>
+                <p>Socket sets, jacks, diagnostic scanners — professional tools for garages and DIY enthusiasts.</p>
+                <span class="shop-category-link">Browse Tools →</span>
+            </a>
+
+            <a href="{{ url_for('shop_category', category='accessories') }}" class="shop-category-card">
+                <div class="shop-category-icon">🎛️</div>
+                <h3>Accessories</h3>
+                <p>Dash cams, LED kits, seat covers, phone mounts — upgrades that improve comfort and safety.</p>
+                <span class="shop-category-link">Browse Accessories →</span>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="service-section alt">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">📝</div>
+            <div>
+                <h2>How Ordering Works</h2>
+                <p class="section-intro">Simple, human, no automated checkout — yet.</p>
+            </div>
+        </div>
+
+        <div class="pillar-grid">
+            <div class="pillar-card">
+                <div class="pillar-icon">1️⃣</div>
+                <h3>Browse</h3>
+                <p>Look through the categories and identify what you need. Note item names.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">2️⃣</div>
+                <h3>Submit Request</h3>
+                <p>Fill in the order form with your items and contact details.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">3️⃣</div>
+                <h3>We Confirm</h3>
+                <p>We reply within 24 hours with pricing, availability, and delivery options.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">4️⃣</div>
+                <h3>Pay & Receive</h3>
+                <p>M-Pesa or cash on pickup. Delivery available for bulk orders in Nairobi.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="{{ url_for('shop_order') }}" class="btn btn-primary">Go to Order Form</a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="container">
+        <h2>Can't find what you're looking for?</h2>
+        <p>We source parts on request — just tell us the vehicle and the part.</p>
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">Contact Us</a>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}VIN Decoder — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>VIN Decoder</h1>
+        <p class="page-sub">
+            Enter a Vehicle Identification Number to see make, model, year, engine, and more.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+
+        <!-- INPUT AREA -->
+        <div class="vin-input-wrapper">
+            <div class="form-group">
+                <label for="vin">Vehicle Identification Number (VIN)</label>
+                <input type="text" id="vin" class="form-input vin-input" placeholder="e.g. JTDBR32E830123456" maxlength="17" autocomplete="off">
+                <small class="calc-help">
+                    17 characters, usually found on the driver's side dashboard, the driver-side door jamb, or on your logbook.
+                </small>
+            </div>
+
+            <button type="button" id="decode-btn" class="btn btn-primary vin-decode-btn">
+                Decode VIN
+            </button>
+
+            <div id="error-message" class="calc-error" style="display: none;"></div>
+        </div>
+
+        <!-- LOADING -->
+        <div id="loading" class="calc-loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Decoding VIN...</p>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="results" class="vin-results" style="display: none;">
+            <div class="vin-result-header">
+                <div class="vin-result-label">Vehicle Identified</div>
+                <div class="vin-result-vin" id="result-vin"></div>
+            </div>
+
+            <div class="vin-fields" id="vin-fields">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <div class="calc-note" style="margin-top: 25px;">
+                Data provided by the NHTSA vPIC database. Coverage is best for US-market and Japanese-import vehicles. If a field is blank, the database does not have that information for this VIN.
+            </div>
+
+            <div class="vin-result-actions">
+                <a href="{{ url_for('contact') }}" class="btn btn-primary">Book a Service</a>
+                <a href="{{ url_for('shop') }}" class="btn btn-outline" style="color: #1B2A4A; border-color: #1B2A4A;">Shop Parts</a>
+            </div>
+        </div>
+
+        <!-- INFO SECTION -->
+        <div class="vin-info" id="vin-info">
+            <h2>Where to Find Your VIN</h2>
+            <div class="pillar-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">🚗</div>
+                    <h3>Dashboard</h3>
+                    <p>Look at the base of the windshield from outside the car. The VIN is on a metal plate on the driver's side.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">🚪</div>
+                    <h3>Door Jamb</h3>
+                    <p>Open the driver's door. The VIN is on a sticker on the frame near the latch.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">📄</div>
+                    <h3>Logbook</h3>
+                    <p>Your vehicle registration document (logbook) lists the VIN or chassis number.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">🔧</div>
+                    <h3>Engine Bay</h3>
+                    <p>On older vehicles, the VIN is often stamped on the firewall or on the engine block itself.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+(function () {
+    const vinEl = document.getElementById('vin');
+    const btn = document.getElementById('decode-btn');
+    const loadingEl = document.getElementById('loading');
+    const resultsEl = document.getElementById('results');
+    const fieldsEl = document.getElementById('vin-fields');
+    const resultVinEl = document.getElementById('result-vin');
+    const errorEl = document.getElementById('error-message');
+    const infoEl = document.getElementById('vin-info');
+
+    function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.style.display = 'block';
+    }
+
+    function clearError() {
+        errorEl.style.display = 'none';
+        errorEl.textContent = '';
+    }
+
+    async function decode() {
+        clearError();
+
+        const vin = vinEl.value.trim().toUpperCase();
+        if (!vin) {
+            showError('Please enter a VIN.');
+            return;
+        }
+
+        loadingEl.style.display = 'block';
+        resultsEl.style.display = 'none';
+        infoEl.style.display = 'none';
+
+        try {
+            const response = await fetch('/api/vin-decode', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ vin: vin }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to decode VIN.');
+            }
+
+            resultVinEl.textContent = data.vin;
+
+            fieldsEl.innerHTML = '';
+            for (const [label, value] of Object.entries(data.fields)) {
+                const row = document.createElement('div');
+                row.className = 'vin-field';
+                row.innerHTML = '<div class="vin-field-label">' + label + '</div><div class="vin-field-value">' + value + '</div>';
+                fieldsEl.appendChild(row);
+            }
+
+            loadingEl.style.display = 'none';
+            resultsEl.style.display = 'block';
+        } catch (err) {
+            loadingEl.style.display = 'none';
+            infoEl.style.display = 'block';
+            showError(err.message);
+        }
+    }
+
+    btn.addEventListener('click', decode);
+
+    vinEl.addEventListener('keypress', e => {
+        if (e.key === 'Enter') decode();
+    });
+
+    // Auto-uppercase as user types
+    vinEl.addEventListener('input', () => {
+        vinEl.value = vinEl.value.toUpperCase();
+    });
+})();
+</script>
+
+{% endblock %}

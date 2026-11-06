@@ -1,0 +1,39 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Add Car Specs — Admin{% endblock %}
+{% block page_title %}Add Car Specs{% endblock %}
+{% block content %}
+
+<form method="POST" class="admin-form">
+    {{ form.hidden_tag() }}
+    <div class="admin-form-row">
+        <div class="admin-form-group">{{ form.make.label }} {{ form.make(class="admin-input") }}</div>
+        <div class="admin-form-group">{{ form.model.label }} {{ form.model(class="admin-input") }}</div>
+    </div>
+    <div class="admin-form-row">
+        <div class="admin-form-group">{{ form.year.label }} {{ form.year(class="admin-input", placeholder="e.g. 2014-2019") }}</div>
+        <div class="admin-form-group">{{ form.body_type.label }} {{ form.body_type(class="admin-input", placeholder="e.g. Hatchback") }}</div>
+    </div>
+    <div class="admin-form-row">
+        <div class="admin-form-group">{{ form.engine_cc.label }} {{ form.engine_cc(class="admin-input", placeholder="e.g. 1500") }}</div>
+        <div class="admin-form-group">{{ form.fuel_type.label }} {{ form.fuel_type(class="admin-input", placeholder="e.g. Petrol") }}</div>
+    </div>
+    <div class="admin-form-row">
+        <div class="admin-form-group">{{ form.fuel_efficiency.label }} {{ form.fuel_efficiency(class="admin-input", placeholder="e.g. 18 km/L") }}</div>
+        <div class="admin-form-group">{{ form.reliability_score.label }} {{ form.reliability_score(class="admin-input", placeholder="1 to 10") }}</div>
+    </div>
+    <div class="admin-form-row">
+        <div class="admin-form-group">{{ form.maintenance_cost.label }} {{ form.maintenance_cost(class="admin-input", placeholder="e.g. Low / KES 20k/yr") }}</div>
+        <div class="admin-form-group">{{ form.resale_value.label }} {{ form.resale_value(class="admin-input", placeholder="e.g. Excellent") }}</div>
+    </div>
+    <div class="admin-form-group">
+        {{ form.spares_availability.label }} {{ form.spares_availability(class="admin-input", placeholder="e.g. Available everywhere") }}
+    </div>
+    <div class="admin-form-group">
+        {{ form.notes.label }} {{ form.notes(class="admin-input", rows="4", placeholder="Any common issues or specific advice for Kenyan roads?") }}
+    </div>
+    <div class="admin-form-actions">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('admin_car_specs') }}" class="btn btn-outline">Cancel</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Gallery — Mechlands Admin{% endblock %}
+{% block page_title %}Gallery Manager{% endblock %}
+
+{% block content %}
+
+<div class="admin-toolbar">
+    <a href="{{ url_for('admin_gallery_new') }}" class="btn btn-primary">+ Add Gallery Item</a>
+</div>
+
+{% if items %}
+    <div class="admin-gallery-grid">
+        {% for item in items %}
+            <div class="admin-gallery-card">
+                <div class="admin-gallery-image">
+                    <img src="{{ url_for('static', filename='images/gallery/' + item.image) }}"
+                         alt="{{ item.caption }}"
+                         onerror="this.style.display='none'; this.parentElement.classList.add('empty');">
+                </div>
+                <div class="admin-gallery-info">
+                    <div class="admin-gallery-category">{{ item.category|upper }}</div>
+                    <div class="admin-gallery-caption">{{ item.caption }}</div>
+                    <div class="admin-gallery-filename"><code>{{ item.image }}</code></div>
+                    <form method="POST" action="{{ url_for('admin_gallery_delete', item_id=item.id) }}" onsubmit="return confirm('Delete this gallery item?');">
+                        <button type="submit" class="admin-btn danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="admin-empty"><p>No gallery items yet.</p></div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}{% if query %}Search: {{ query }} — Mechlands Garage{% else %}Search — Mechlands Garage{% endif %}{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Search</h1>
+        {% if query %}
+            <p class="page-sub">
+                {% if total > 0 %}
+                    {{ total }} result{% if total != 1 %}s{% endif %} for "<strong>{{ query }}</strong>"
+                {% else %}
+                    No results found for "<strong>{{ query }}</strong>"
+                {% endif %}
+            </p>
+        {% else %}
+            <p class="page-sub">Find products, blog posts, events, and pages across Mechlands Garage.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+
+        <!-- SEARCH BOX -->
+        <form method="GET" action="{{ url_for('search') }}" class="search-page-form">
+            <input type="text"
+                   name="q"
+                   value="{{ query }}"
+                   placeholder="Search products, articles, events..."
+                   class="search-page-input"
+                   autofocus>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        {% if query and total == 0 %}
+            <!-- NO RESULTS -->
+            <div class="search-empty">
+                <div class="search-empty-icon">🔍</div>
+                <h2>No matches found</h2>
+                <p>Try a broader term, or browse these:</p>
+                <div class="search-empty-links">
+                    <a href="{{ url_for('shop') }}" class="btn btn-primary">Browse Shop</a>
+                    <a href="{{ url_for('blog') }}" class="btn btn-outline" style="color: #1B2A4A; border-color: #1B2A4A;">Read Blog</a>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if not query %}
+            <!-- NO QUERY YET -->
+            <div class="search-tips">
+                <h3>Search tips</h3>
+                <ul>
+                    <li>Try product names: <em>brake pads</em>, <em>socket set</em>, <em>dash cam</em></li>
+                    <li>Try service terms: <em>diagnostics</em>, <em>conversion</em>, <em>tuning</em></li>
+                    <li>Try topics: <em>EV</em>, <em>battery</em>, <em>electrical</em></li>
+                </ul>
+            </div>
+        {% endif %}
+
+        <!-- PRODUCTS -->
+        {% if results.products %}
+            <div class="search-group">
+                <h2 class="search-group-title">Products <span class="search-count">{{ results.products|length }}</span></h2>
+                <div class="product-grid">
+                    {% for product in results.products %}
+                        <div class="product-card">
+                            <h3>{{ product.name }}</h3>
+                            <p>{{ product.description }}</p>
+                            <div class="product-footer">
+                                {% if product.price %}
+                                    <span class="product-price">KES {{ "{:,}".format(product.price) }}</span>
+                                {% else %}
+                                    <span class="product-price">Request Price</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- BLOG POSTS -->
+        {% if results.blog %}
+            <div class="search-group">
+                <h2 class="search-group-title">Blog Posts <span class="search-count">{{ results.blog|length }}</span></h2>
+                <div class="blog-list">
+                    {% for post in results.blog %}
+                        <article class="blog-card">
+                            <div class="blog-date">{{ post.date }}</div>
+                            <h2><a href="{{ url_for('blog_post', slug=post.slug) }}">{{ post.title }}</a></h2>
+                            <p>{{ post.excerpt }}</p>
+                            <a href="{{ url_for('blog_post', slug=post.slug) }}" class="read-more">Read more →</a>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- EVENTS -->
+        {% if results.events %}
+            <div class="search-group">
+                <h2 class="search-group-title">Events <span class="search-count">{{ results.events|length }}</span></h2>
+                <div class="event-list">
+                    {% for event in results.events %}
+                        <div class="event-card {% if event.status == 'past' %}past{% else %}upcoming{% endif %}">
+                            <div class="event-date">
+                                <span class="event-day">{{ event.date[8:10] }}</span>
+                                <span class="event-month">
+                                    {% set month_num = event.date[5:7] %}
+                                    {% if month_num == '01' %}JAN
+                                    {% elif month_num == '02' %}FEB
+                                    {% elif month_num == '03' %}MAR
+                                    {% elif month_num == '04' %}APR
+                                    {% elif month_num == '05' %}MAY
+                                    {% elif month_num == '06' %}JUN
+                                    {% elif month_num == '07' %}JUL
+                                    {% elif month_num == '08' %}AUG
+                                    {% elif month_num == '09' %}SEP
+                                    {% elif month_num == '10' %}OCT
+                                    {% elif month_num == '11' %}NOV
+                                    {% else %}DEC{% endif %}
+                                </span>
+                            </div>
+                            <div class="event-info">
+                                <h3>{{ event.title }}</h3>
+                                <p class="event-location">📍 {{ event.location }}</p>
+                                <p>{{ event.description }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- PAGES -->
+        {% if results.pages %}
+            <div class="search-group">
+                <h2 class="search-group-title">Pages <span class="search-count">{{ results.pages|length }}</span></h2>
+                <div class="search-page-results">
+                    {% for page in results.pages %}
+                        <a href="{{ url_for(page.url_endpoint) }}" class="search-page-result">
+                            <h3>{{ page.title }}</h3>
+                            <p>{{ page.description }}</p>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

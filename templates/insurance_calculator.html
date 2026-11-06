@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Insurance Calculator — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Insurance Cost Estimator</h1>
+        <p class="page-sub">
+            Estimate the cost of comprehensive or third-party motor insurance in Kenya.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="calculator-layout">
+
+            <!-- INPUTS -->
+            <div class="calculator-inputs">
+                <h2>Your Vehicle Details</h2>
+
+                <div class="form-group">
+                    <label for="value">Vehicle Value (KES)</label>
+                    <input type="number" id="value" class="form-input" value="1500000" min="0" step="10000">
+                    <small class="calc-help">Current market value, not purchase price.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="coverage">Coverage Type</label>
+                    <select id="coverage" class="form-input">
+                        <option value="comprehensive" selected>Comprehensive</option>
+                        <option value="third_party_fire_theft">Third Party, Fire & Theft</option>
+                        <option value="third_party">Third Party Only</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicle-age">Vehicle Age</label>
+                    <select id="vehicle-age" class="form-input">
+                        <option value="0-3">0 – 3 years</option>
+                        <option value="4-7" selected>4 – 7 years</option>
+                        <option value="8-12">8 – 12 years</option>
+                        <option value="13+">13+ years</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="usage">Primary Usage</label>
+                    <select id="usage" class="form-input">
+                        <option value="private" selected>Private / Personal</option>
+                        <option value="commercial">Commercial / Business</option>
+                        <option value="psv">PSV / Public Service</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ncd">No-Claim Discount (NCD)</label>
+                    <select id="ncd" class="form-input">
+                        <option value="0">None (first year)</option>
+                        <option value="10">10% (1 claim-free year)</option>
+                        <option value="20">20% (2 claim-free years)</option>
+                        <option value="30" selected>30% (3 claim-free years)</option>
+                        <option value="40">40% (4 claim-free years)</option>
+                        <option value="50">50% (5+ claim-free years)</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- RESULTS -->
+            <div class="calculator-results">
+                <h2>Your Estimate</h2>
+
+                <div class="calc-result-block primary">
+                    <div class="calc-result-label">Estimated Annual Premium</div>
+                    <div class="calc-result-value" id="premium">—</div>
+                </div>
+
+                <div class="calc-result-grid">
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Base Rate Applied</div>
+                        <div class="calc-result-value small" id="base-rate">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Monthly Equivalent</div>
+                        <div class="calc-result-value small" id="monthly">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">NCD Savings</div>
+                        <div class="calc-result-value small" id="ncd-savings">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Policy Holders Levy (0.25%)</div>
+                        <div class="calc-result-value small" id="levy">—</div>
+                    </div>
+                </div>
+
+                <div class="calc-note">
+                    Estimates are indicative. Actual premiums depend on your insurer, claims history, security features, and other factors. Comprehensive typically covers 3.5% – 5% of vehicle value.
+                </div>
+
+                <a href="{{ url_for('contact') }}" class="btn btn-primary" style="width: 100%; text-align: center; margin-top: 20px;">
+                    Get an Insurance Quote
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const value = document.getElementById('value');
+    const coverage = document.getElementById('coverage');
+    const age = document.getElementById('vehicle-age');
+    const usage = document.getElementById('usage');
+    const ncd = document.getElementById('ncd');
+
+    const premiumEl = document.getElementById('premium');
+    const baseRateEl = document.getElementById('base-rate');
+    const monthlyEl = document.getElementById('monthly');
+    const ncdEl = document.getElementById('ncd-savings');
+    const levyEl = document.getElementById('levy');
+
+    function formatKES(n) {
+        if (!isFinite(n)) return '—';
+        return 'KES ' + Math.round(n).toLocaleString('en-KE');
+    }
+
+    function getBaseRate() {
+        // Comprehensive: 3.5% – 5% depending on age and usage
+        // Third-party-fire-theft: ~2%
+        // Third-party-only: fixed minimum ~KES 7,500
+        if (coverage.value === 'third_party') {
+            return 0; // handled separately
+        }
+        if (coverage.value === 'third_party_fire_theft') {
+            return 0.02;
+        }
+        // Comprehensive
+        let rate = 0.04; // baseline 4%
+        if (age.value === '0-3') rate = 0.035;
+        else if (age.value === '4-7') rate = 0.04;
+        else if (age.value === '8-12') rate = 0.045;
+        else if (age.value === '13+') rate = 0.05;
+
+        if (usage.value === 'commercial') rate += 0.005;
+        else if (usage.value === 'psv') rate += 0.015;
+
+        return rate;
+    }
+
+    function calculate() {
+        const v = parseFloat(value.value) || 0;
+        const ncdPercent = parseFloat(ncd.value) || 0;
+
+        let baseRate, basePremium;
+
+        if (coverage.value === 'third_party') {
+            // Flat minimum + small percentage of value
+            baseRate = 0;
+            basePremium = Math.max(7500, v * 0.005);
+        } else {
+            baseRate = getBaseRate();
+            basePremium = v * baseRate;
+        }
+
+        const ncdSavings = basePremium * (ncdPercent / 100);
+        const afterNcd = basePremium - ncdSavings;
+
+        // Training levy 0.2% + policy holders compensation fund 0.25% + stamp duty
+        const levy = afterNcd * 0.0045;
+
+        const totalPremium = afterNcd + levy;
+
+        baseRateEl.textContent = baseRate > 0 ? (baseRate * 100).toFixed(2) + '%' : 'Flat';
+        premiumEl.textContent = formatKES(totalPremium);
+        monthlyEl.textContent = formatKES(totalPremium / 12);
+        ncdEl.textContent = formatKES(ncdSavings);
+        levyEl.textContent = formatKES(levy);
+    }
+
+    [value, coverage, age, usage, ncd].forEach(el => {
+        el.addEventListener('input', calculate);
+        el.addEventListener('change', calculate);
+    });
+
+    calculate();
+})();
+</script>
+
+{% endblock %}

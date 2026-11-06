@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Contact — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p class="page-sub">
+            Questions, quotes, or partnership inquiries — we respond to every message.
+        </p>
+    </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="service-section">
+    <div class="container contact-layout">
+
+        <!-- CONTACT INFO -->
+        <div class="contact-info">
+            <h2>Get in Touch</h2>
+            <p>Reach us through the form, or directly via the details below. We aim to respond within 24 hours.</p>
+
+            <div class="info-block">
+                <div class="info-label">📍 Location</div>
+                <div class="info-value">Nairobi, Kenya</div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">📧 Email</div>
+                <div class="info-value">info@mechlandsgarage.co.ke</div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">📞 Phone</div>
+                <div class="info-value">+254 XXX XXX XXX <em>(placeholder)</em></div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">🕒 Hours</div>
+                <div class="info-value">Mon – Sat: 8:00 AM – 6:00 PM</div>
+            </div>
+
+            <div class="info-block">
+                <div class="info-label">🤝 Investor Inquiries</div>
+                <div class="info-value">Select "Investment / Partnership" in the form and we'll route your message accordingly.</div>
+            </div>
+        </div>
+
+        <!-- CONTACT FORM -->
+        <div class="contact-form-wrapper">
+            <h2>Send a Message</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('contact') }}" class="contact-form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class="form-input", placeholder="Your full name") }}
+                    {% for error in form.name.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class="form-input", placeholder="you@example.com") }}
+                    {% for error in form.email.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.phone.label }}
+                    {{ form.phone(class="form-input", placeholder="+254 ...") }}
+                    {% for error in form.phone.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.service.label }}
+                    {{ form.service(class="form-input") }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.message.label }}
+                    {{ form.message(class="form-input", rows="6", placeholder="Tell us about your vehicle or your inquiry...") }}
+                    {% for error in form.message.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                {{ form.submit(class="btn btn-primary form-submit") }}
+            </form>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

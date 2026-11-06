@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Tools — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Tools & Calculators</h1>
+        <p class="page-sub">
+            Practical utilities for vehicle owners, buyers, and enthusiasts.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+
+        <div class="pillar-grid">
+
+            <a href="{{ url_for('vin_decoder') }}" class="pillar-card tool-card">
+                <div class="pillar-icon">🔍</div>
+                <h3>VIN Decoder</h3>
+                <p>Decode a vehicle identification number to see make, model, year, and full specs.</p>
+                <span class="tool-link">Open Tool →</span>
+            </a>
+
+            <a href="{{ url_for('loan_calculator') }}" class="pillar-card tool-card">
+                <div class="pillar-icon">💰</div>
+                <h3>Loan Calculator</h3>
+                <p>Work out your monthly payment, total interest, and total cost of financing a vehicle.</p>
+                <span class="tool-link">Open Calculator →</span>
+            </a>
+
+            <a href="{{ url_for('insurance_calculator') }}" class="pillar-card tool-card">
+                <div class="pillar-icon">🛡️</div>
+                <h3>Insurance Cost Estimator</h3>
+                <p>Estimate comprehensive or third-party motor insurance premiums.</p>
+                <span class="tool-link">Open Calculator →</span>
+            </a>
+
+            <a href="{{ url_for('fuel_efficiency') }}" class="pillar-card tool-card">
+                <div class="pillar-icon">⛽</div>
+                <h3>Fuel Efficiency Calculator</h3>
+                <p>Calculate your vehicle's fuel consumption and cost per kilometer.</p>
+                <span class="tool-link">Open Calculator →</span>
+            </a>
+
+            <a href="{{ url_for('ev_vs_ice') }}" class="pillar-card tool-card">
+                <div class="pillar-icon">⚡</div>
+                <h3>EV vs ICE Total Cost</h3>
+                <p>Compare the true cost of ownership between electric and combustion vehicles over time.</p>
+                <span class="tool-link">Open Calculator →</span>
+            </a>
+
+            <a href="{{ url_for('route_cost') }}" class="pillar-card tool-card">
+                <div class="pillar-icon">🗺️</div>
+                <h3>Route Cost Estimator</h3>
+                <p>Estimate the fuel or energy cost of any journey in Kenya.</p>
+                <span class="tool-link">Open Calculator →</span>
+            </a>
+
+            <a href="{{ url_for('maintenance_cost') }}" class="pillar-card tool-card">
+                <div class="pillar-icon">🔧</div>
+                <h3>Maintenance Cost Estimator</h3>
+                <p>Estimate the annual cost of keeping your vehicle in good condition.</p>
+                <span class="tool-link">Open Calculator →</span>
+            </a>
+
+
+
+{#            <div class="pillar-card tool-card disabled">#}
+{#                <div class="pillar-icon">🗺️</div>#}
+{#                <h3>Route Cost Estimator</h3>#}
+{#                <p>Estimate the fuel cost of any journey. Coming soon.</p>#}
+{#                <span class="tool-link">Coming Soon</span>#}
+{#            </div>#}
+
+
+            <div class="pillar-card tool-card disabled">
+                <div class="pillar-icon">🔧</div>
+                <h3>More calculators </h3>
+                <p>We are still building, More calculators, Coming soon.</p>
+                <span class="tool-link">Coming Soon</span>
+            </div>
+
+
+            <a href="{{ url_for('car_compare') }}" class="pillar-card tool-card">
+                <div class="pillar-icon">⚖️</div>
+                <h3>Car Comparison Tool</h3>
+                <p>Compare reliability, maintenance, and resale value between different cars.</p>
+                <span class="tool-link">Open Tool →</span>
+            </a>
+
+
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

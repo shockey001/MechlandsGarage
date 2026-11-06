@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin — Mechlands Garage{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body class="admin-body">
+
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <a href="{{ url_for('admin_home') }}">Mechlands<span>Admin</span></a>
+            </div>
+            <nav class="admin-nav">
+                <a href="{{ url_for('admin_home') }}" class="{% if request.endpoint == 'admin_home' %}active{% endif %}">
+                    <span>📊</span> Dashboard
+                </a>
+                <a href="{{ url_for('admin_submissions') }}" class="{% if request.endpoint == 'admin_submissions' %}active{% endif %}">
+                    <span>📥</span> Submissions
+                </a>
+                <a href="{{ url_for('admin_cars') }}" class="{% if request.endpoint in ['admin_cars', 'admin_cars_new'] %}active{% endif %}"><span>🚗</span> Car Sales</a>
+                <a href="{{ url_for('admin_blog') }}" class="{% if request.endpoint in ['admin_blog', 'admin_blog_new', 'admin_blog_edit'] %}active{% endif %}">
+                    <span>📝</span> Blog
+                </a>
+                <a href="{{ url_for('admin_events') }}" class="{% if request.endpoint in ['admin_events', 'admin_events_new', 'admin_events_edit'] %}active{% endif %}">
+                    <span>📅</span> Events
+                </a>
+                <a href="{{ url_for('admin_gallery') }}" class="{% if request.endpoint in ['admin_gallery', 'admin_gallery_new'] %}active{% endif %}">
+                    <span>🖼️</span> Gallery
+                </a>
+                <a href="{{ url_for('admin_products') }}" class="{% if request.endpoint in ['admin_products', 'admin_products_new', 'admin_products_edit'] %}active{% endif %}">
+                    <span>🛒</span> Products
+                </a>
+                <a href="{{ url_for('admin_car_specs') }}" class="{% if request.endpoint in ['admin_car_specs', 'admin_car_specs_new'] %}active{% endif %}">
+                    <span>⚖️</span> Car Compare DB
+                </a>
+                <a href="#" class="disabled">
+                    <span>👥</span> Users <em>(soon)</em>
+                </a>
+            </nav>
+            <div class="admin-sidebar-footer">
+                <a href="{{ url_for('home') }}" target="_blank">View Public Site ↗</a>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <div class="admin-main">
+
+            <header class="admin-header">
+                <div class="admin-header-title">
+                    {% block page_title %}Admin{% endblock %}
+                </div>
+                <div class="admin-header-user">
+                    <span>{{ current_user.full_name }}</span>
+                    <span class="admin-role-badge">{{ current_user.role }}</span>
+                    <a href="{{ url_for('logout') }}" class="admin-logout">Log Out</a>
+                </div>
+            </header>
+
+            <main class="admin-content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </main>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

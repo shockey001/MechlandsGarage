@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category|capitalize }} — Mechlands Garage Shop{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>{{ category|capitalize }}</h1>
+        <p class="page-sub">
+            {% if category == 'spares' %}
+                Consumable and replacement parts for petrol, diesel, and electric vehicles.
+            {% elif category == 'tools' %}
+                Professional tools for garages, workshops, and serious DIY.
+            {% elif category == 'accessories' %}
+                Upgrades, comfort, and safety items for your vehicle.
+            {% endif %}
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+
+        <div class="shop-nav">
+            <a href="{{ url_for('shop') }}" class="back-link">← All Categories</a>
+            <div class="shop-nav-links">
+                <a href="{{ url_for('shop_category', category='spares') }}" class="{% if category == 'spares' %}active{% endif %}">Spares</a>
+                <a href="{{ url_for('shop_category', category='tools') }}" class="{% if category == 'tools' %}active{% endif %}">Tools</a>
+                <a href="{{ url_for('shop_category', category='accessories') }}" class="{% if category == 'accessories' %}active{% endif %}">Accessories</a>
+            </div>
+        </div>
+
+        {% if products %}
+            <div class="product-grid">
+                {% for product in products %}
+                    <div class="product-card">
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.description }}</p>
+                        <div class="product-footer">
+                            {% if product.price %}
+                                <span class="product-price">KES {{ "{:,}".format(product.price) }}</span>
+                            {% else %}
+                                <span class="product-price">Request Price</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No products in this category yet.</p>
+        {% endif %}
+
+        <div class="shop-order-cta">
+            <h3>Ready to order?</h3>
+            <p>Note the items you want and submit an order request — we'll confirm pricing and availability.</p>
+            <a href="{{ url_for('shop_order') }}" class="btn btn-primary">Submit Order Request</a>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

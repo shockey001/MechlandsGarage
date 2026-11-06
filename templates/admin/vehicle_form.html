@@ -1,0 +1,36 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Add Vehicle — Admin{% endblock %}
+{% block page_title %}Add New Vehicle{% endblock %}
+{% block content %}
+
+<form method="POST" class="admin-form">
+    {{ form.hidden_tag() }}
+    <div class="admin-form-group">
+        {{ form.title.label }} {{ form.title(class="admin-input", placeholder="e.g. 2018 Toyota Harrier") }}
+    </div>
+    <div class="admin-form-row">
+        <div class="admin-form-group">{{ form.make.label }} {{ form.make(class="admin-input") }}</div>
+        <div class="admin-form-group">{{ form.model.label }} {{ form.model(class="admin-input") }}</div>
+    </div>
+    <div class="admin-form-row">
+        <div class="admin-form-group">{{ form.year.label }} {{ form.year(class="admin-input") }}</div>
+        <div class="admin-form-group">{{ form.price.label }} {{ form.price(class="admin-input") }}</div>
+        <div class="admin-form-group">{{ form.mileage.label }} {{ form.mileage(class="admin-input") }}</div>
+    </div>
+    <div class="admin-form-row">
+        <div class="admin-form-group">{{ form.fuel_type.label }} {{ form.fuel_type(class="admin-input") }}</div>
+        <div class="admin-form-group">{{ form.transmission.label }} {{ form.transmission(class="admin-input") }}</div>
+    </div>
+    <div class="admin-form-group">
+        {{ form.description.label }} {{ form.description(class="admin-input", rows="5") }}
+    </div>
+    <div class="admin-form-group">
+        {{ form.image_url.label }} {{ form.image_url(class="admin-input", placeholder="https://...") }}
+        <small class="admin-help">Link to an image of the vehicle.</small>
+    </div>
+    <div class="admin-form-actions">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('admin_cars') }}" class="btn btn-outline">Cancel</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Dashboard</h1>
+        <p class="page-sub">Welcome back, {{ current_user.full_name }}.</p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="dashboard-welcome">
+            <div class="dashboard-card">
+                <div class="dashboard-label">Signed in as</div>
+                <div class="dashboard-value">{{ current_user.email }}</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-label">Role</div>
+                <div class="dashboard-value">{{ current_user.role|capitalize }}</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-label">Member since</div>
+                <div class="dashboard-value">{{ current_user.created_at[:10] }}</div>
+            </div>
+        </div>
+
+        <div class="dashboard-placeholder">
+            <h2>Admin features coming soon</h2>
+            <p>In the next session, this dashboard will let you:</p>
+            <ul>
+                <li>View all form submissions (contact, investor, shop orders, job applications)</li>
+                <li>Publish, edit, and delete blog posts</li>
+                <li>Manage events and gallery items</li>
+                <li>Manage shop products</li>
+                <li>Invite new staff accounts</li>
+            </ul>
+            <a href="{{ url_for('logout') }}" class="btn btn-primary">Log Out</a>
+        </div>
+
+        {% if current_user.role == 'admin' %}
+            <div class="dashboard-placeholder">
+                <h2>Admin Dashboard Available</h2>
+                <p>You have administrator access. Head to the admin area to manage the site.</p>
+                <a href="{{ url_for('admin_home') }}" class="btn btn-primary">Open Admin Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline" style="color: #1B2A4A; border-color: #1B2A4A; margin-left: 10px;">Log Out</a>
+            </div>
+        {% else %}
+            <div class="dashboard-placeholder">
+                <h2>Welcome</h2>
+                <p>Staff features are being built. Check back soon.</p>
+                <a href="{{ url_for('logout') }}" class="btn btn-primary">Log Out</a>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

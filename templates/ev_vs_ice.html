@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}EV vs ICE Total Cost — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>EV vs ICE — Total Cost of Ownership</h1>
+        <p class="page-sub">
+            Compare the true cost of electric vs petrol and diesel over the life of the vehicle.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="calculator-layout">
+
+            <!-- INPUTS -->
+            <div class="calculator-inputs">
+                <h2>Your Details</h2>
+
+                <div class="form-group">
+                    <label for="vehicle-price">Vehicle Price (KES)</label>
+                    <input type="number" id="vehicle-price" class="form-input" value="2000000" min="0" step="50000">
+                    <small class="calc-help">Purchase price — the same for all vehicles compared.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="annual-km">Annual Distance (km)</label>
+                    <input type="number" id="annual-km" class="form-input" value="15000" min="0" step="500">
+                    <small class="calc-help">Average Kenyan driver: 12,000 – 20,000 km/year.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="ownership-years">Years of Ownership</label>
+                    <select id="ownership-years" class="form-input">
+                        <option value="3">3 years</option>
+                        <option value="5" selected>5 years</option>
+                        <option value="7">7 years</option>
+                        <option value="10">10 years</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ice-type">ICE Vehicle Type</label>
+                    <select id="ice-type" class="form-input">
+                        <option value="petrol_sedan" selected>Petrol Sedan (Axio, Note, Fielder)</option>
+                        <option value="petrol_suv">Petrol SUV (Harrier, X-Trail, CX-5)</option>
+                        <option value="diesel_pickup">Diesel Pickup (Hilux, D-Max, Ranger)</option>
+                    </select>
+                </div>
+
+                <div class="config-note">
+                    <strong>Prices used (editable):</strong>
+                    <ul>
+                        <li>Petrol: KES {{ config.petrol_price }} per litre</li>
+                        <li>Diesel: KES {{ config.diesel_price }} per litre</li>
+                        <li>Electricity: KES {{ config.electricity_price }} per kWh</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- RESULTS -->
+            <div class="calculator-results">
+                <h2>Total Cost of Ownership</h2>
+
+                <div class="calc-result-block primary">
+                    <div class="calc-result-label">EV Saves You</div>
+                    <div class="calc-result-value" id="ev-savings">—</div>
+                    <div class="calc-result-sub" id="ev-savings-sub"></div>
+                </div>
+
+                <div class="calc-result-grid">
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">ICE Total Cost</div>
+                        <div class="calc-result-value small" id="ice-total">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">EV Total Cost</div>
+                        <div class="calc-result-value small" id="ev-total">—</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #1B2A4A; margin: 25px 0 15px; font-size: 1.1rem;">Cost Breakdown</h3>
+
+                <table class="breakdown-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>ICE</th>
+                            <th>EV</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fuel / Energy</td>
+                            <td id="ice-fuel">—</td>
+                            <td id="ev-energy">—</td>
+                        </tr>
+                        <tr>
+                            <td>Maintenance</td>
+                            <td id="ice-maint">—</td>
+                            <td id="ev-maint">—</td>
+                        </tr>
+                        <tr>
+                            <td>Insurance</td>
+                            <td id="ice-ins">—</td>
+                            <td id="ev-ins">—</td>
+                        </tr>
+                        <tr>
+                            <td>Depreciation</td>
+                            <td id="ice-dep">—</td>
+                            <td id="ev-dep">—</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
+                            <td id="ice-total-2">—</td>
+                            <td id="ev-total-2">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="calc-note" style="margin-top: 20px;">
+                    Estimates use current Kenyan averages. Actual costs vary by vehicle, driving style, and maintenance history. Depreciation is calculated as % of value at purchase, compounded annually.
+                </div>
+
+                <a href="{{ url_for('contact') }}" class="btn btn-primary" style="width: 100%; text-align: center; margin-top: 20px;">
+                    Discuss EV Conversion
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const CONFIG = {
+        petrolPrice: {{ config.petrol_price }},
+        dieselPrice: {{ config.diesel_price }},
+        electricityPrice: {{ config.electricity_price }},
+        petrolSedanConsumption: {{ config.petrol_sedan_consumption }},
+        petrolSuvConsumption: {{ config.petrol_suv_consumption }},
+        dieselPickupConsumption: {{ config.diesel_pickup_consumption }},
+        evConsumption: {{ config.ev_consumption }},
+        iceMaintenance: {{ config.ice_maintenance }},
+        evMaintenance: {{ config.ev_maintenance }},
+        insuranceRate: {{ config.insurance_rate }},
+        iceDepreciation: {{ config.ice_depreciation }},
+        evDepreciation: {{ config.ev_depreciation }},
+    };
+
+    const vehiclePriceEl = document.getElementById('vehicle-price');
+    const annualKmEl = document.getElementById('annual-km');
+    const yearsEl = document.getElementById('ownership-years');
+    const iceTypeEl = document.getElementById('ice-type');
+
+    const evSavingsEl = document.getElementById('ev-savings');
+    const evSavingsSubEl = document.getElementById('ev-savings-sub');
+    const iceTotalEl = document.getElementById('ice-total');
+    const evTotalEl = document.getElementById('ev-total');
+
+    const iceFuelEl = document.getElementById('ice-fuel');
+    const evEnergyEl = document.getElementById('ev-energy');
+    const iceMaintEl = document.getElementById('ice-maint');
+    const evMaintEl = document.getElementById('ev-maint');
+    const iceInsEl = document.getElementById('ice-ins');
+    const evInsEl = document.getElementById('ev-ins');
+    const iceDepEl = document.getElementById('ice-dep');
+    const evDepEl = document.getElementById('ev-dep');
+    const iceTotal2El = document.getElementById('ice-total-2');
+    const evTotal2El = document.getElementById('ev-total-2');
+
+    function formatKES(n) {
+        if (!isFinite(n)) return '—';
+        return 'KES ' + Math.round(n).toLocaleString('en-KE');
+    }
+
+    function getIceConsumption() {
+        if (iceTypeEl.value === 'petrol_suv') return CONFIG.petrolSuvConsumption;
+        if (iceTypeEl.value === 'diesel_pickup') return CONFIG.dieselPickupConsumption;
+        return CONFIG.petrolSedanConsumption;
+    }
+
+    function getIceFuelPrice() {
+        if (iceTypeEl.value === 'diesel_pickup') return CONFIG.dieselPrice;
+        return CONFIG.petrolPrice;
+    }
+
+    function calculateDepreciation(initialValue, years, rate) {
+        // Returns total depreciation in KES (not remaining value)
+        const remaining = initialValue * Math.pow(1 - rate, years);
+        return initialValue - remaining;
+    }
+
+    function calculate() {
+        const price = parseFloat(vehiclePriceEl.value) || 0;
+        const annualKm = parseFloat(annualKmEl.value) || 0;
+        const years = parseInt(yearsEl.value) || 5;
+
+        const totalKm = annualKm * years;
+
+        // ---- ICE costs ----
+        const iceConsumption = getIceConsumption();       // L/100km
+        const iceFuelPrice = getIceFuelPrice();           // KES/L
+        const iceLitres = (totalKm / 100) * iceConsumption;
+        const iceFuelCost = iceLitres * iceFuelPrice;
+
+        const iceMaintCost = (totalKm / 10000) * CONFIG.iceMaintenance;
+        const iceInsCost = price * CONFIG.insuranceRate * years;
+        const iceDepCost = calculateDepreciation(price, years, CONFIG.iceDepreciation);
+
+        const iceTotal = iceFuelCost + iceMaintCost + iceInsCost + iceDepCost;
+
+        // ---- EV costs ----
+        const evKwh = (totalKm / 100) * CONFIG.evConsumption;
+        const evEnergyCost = evKwh * CONFIG.electricityPrice;
+
+        const evMaintCost = (totalKm / 10000) * CONFIG.evMaintenance;
+        const evInsCost = price * CONFIG.insuranceRate * years;
+        const evDepCost = calculateDepreciation(price, years, CONFIG.evDepreciation);
+
+        const evTotal = evEnergyCost + evMaintCost + evInsCost + evDepCost;
+
+        // ---- Savings ----
+        const savings = iceTotal - evTotal;
+
+        // ---- Display ----
+        if (savings > 0) {
+            evSavingsEl.textContent = formatKES(savings);
+            evSavingsSubEl.textContent = 'Over ' + years + ' years of ownership';
+        } else {
+            evSavingsEl.textContent = formatKES(Math.abs(savings)) + ' more';
+            evSavingsSubEl.textContent = 'EV costs more over ' + years + ' years';
+        }
+
+        iceTotalEl.textContent = formatKES(iceTotal);
+        evTotalEl.textContent = formatKES(evTotal);
+
+        iceFuelEl.textContent = formatKES(iceFuelCost);
+        evEnergyEl.textContent = formatKES(evEnergyCost);
+        iceMaintEl.textContent = formatKES(iceMaintCost);
+        evMaintEl.textContent = formatKES(evMaintCost);
+        iceInsEl.textContent = formatKES(iceInsCost);
+        evInsEl.textContent = formatKES(evInsCost);
+        iceDepEl.textContent = formatKES(iceDepCost);
+        evDepEl.textContent = formatKES(evDepCost);
+        iceTotal2El.textContent = formatKES(iceTotal);
+        evTotal2El.textContent = formatKES(evTotal);
+    }
+
+    [vehiclePriceEl, annualKmEl, yearsEl, iceTypeEl].forEach(el => {
+        el.addEventListener('input', calculate);
+        el.addEventListener('change', calculate);
+    });
+
+    calculate();
+})();
+</script>
+
+{% endblock %}

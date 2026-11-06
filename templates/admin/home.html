@@ -1,0 +1,56 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Dashboard — Mechlands Admin{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-label">Total Submissions</div>
+        <div class="admin-stat-value">{{ total_submissions }}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-label">Contact Messages</div>
+        <div class="admin-stat-value">{{ counts.get('contact', 0) }}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-label">Investor Inquiries</div>
+        <div class="admin-stat-value">{{ counts.get('investor_inquiry', 0) }}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-label">Shop Orders</div>
+        <div class="admin-stat-value">{{ counts.get('shop_order', 0) }}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-label">Job Applications</div>
+        <div class="admin-stat-value">{{ counts.get('job_application', 0) }}</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-label">Users</div>
+        <div class="admin-stat-value">{{ total_users }}</div>
+    </div>
+</div>
+
+<div class="admin-section">
+    <h2>Quick Actions</h2>
+    <div class="admin-actions">
+        <a href="{{ url_for('admin_submissions') }}" class="admin-action-card">
+            <span class="admin-action-icon">📥</span>
+            <span class="admin-action-title">View Submissions</span>
+            <span class="admin-action-desc">Read all contact, investor, order, and application messages.</span>
+        </a>
+        <a href="{{ url_for('home') }}" target="_blank" class="admin-action-card">
+            <span class="admin-action-icon">🌐</span>
+            <span class="admin-action-title">Open Public Site</span>
+            <span class="admin-action-desc">See the site as visitors and customers see it.</span>
+        </a>
+        <div class="admin-action-card disabled">
+            <span class="admin-action-icon">✏️</span>
+            <span class="admin-action-title">Content Manager</span>
+            <span class="admin-action-desc">Coming next session — edit blog, events, gallery, and products.</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

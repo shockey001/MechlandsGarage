@@ -1,0 +1,43 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Blog — Mechlands Admin{% endblock %}
+{% block page_title %}Blog Manager{% endblock %}
+
+{% block content %}
+
+<div class="admin-toolbar">
+    <a href="{{ url_for('admin_blog_new') }}" class="btn btn-primary">+ New Blog Post</a>
+</div>
+
+{% if posts %}
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Slug</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+                <tr>
+                    <td><strong>{{ post.title }}</strong></td>
+                    <td>{{ post.date }}</td>
+                    <td><code>{{ post.slug }}</code></td>
+                    <td>
+                        <a href="{{ url_for('blog_post', slug=post.slug) }}" target="_blank" class="admin-btn">View</a>
+                        <a href="{{ url_for('admin_blog_edit', post_id=post.id) }}" class="admin-btn">Edit</a>
+                        <form method="POST" action="{{ url_for('admin_blog_delete', post_id=post.id) }}" style="display:inline" onsubmit="return confirm('Delete this post?');">
+                            <button type="submit" class="admin-btn danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="admin-empty"><p>No blog posts yet.</p></div>
+{% endif %}
+
+{% endblock %}

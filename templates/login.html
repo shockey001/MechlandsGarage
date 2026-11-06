@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Log In — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Log In</h1>
+        <p class="page-sub">Access your Mechlands Garage dashboard.</p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="login-wrapper">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}" class="contact-form">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class="form-input", placeholder="you@example.com", autofocus=true) }}
+                    {% for error in form.email.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.password.label }}
+                    {{ form.password(class="form-input", placeholder="Your password") }}
+                    {% for error in form.password.errors %}
+                        <span class="form-error">{{ error }}</span>
+                    {% endfor %}
+                </div>
+
+                {{ form.submit(class="btn btn-primary form-submit") }}
+            </form>
+
+            <p class="login-note">
+                Accounts are created by invitation only. If you need access, contact the administrator.
+            </p>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

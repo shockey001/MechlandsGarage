@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Mechlands Garage — ICE Repair, EV Conversion, Engineering{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="container">
+        <h1>Where Traditional Engineering<br>Meets Electric Innovation</h1>
+        <p class="hero-sub">
+            Kenya's first integrated automotive workshop for ICE repair, EV conversion,
+            performance tuning, and custom engineering.
+        </p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('services') }}" class="btn btn-primary">Our Services</a>
+            <a href="{{ url_for('investors') }}" class="btn btn-outline">Partner With Us</a>
+        </div>
+    </div>
+</section>
+
+<!-- THREE PILLARS -->
+<section class="pillars">
+    <div class="container">
+        <h2 class="section-title">Three Pillars. One Workshop.</h2>
+
+        <div class="pillar-grid">
+
+            <div class="pillar-card">
+                <div class="pillar-icon">🔧</div>
+                <h3>ICE Repair & Maintenance</h3>
+                <p>Full diagnostics, engine work, brakes, suspension, and electrical systems for petrol and diesel vehicles.</p>
+            </div>
+
+            <div class="pillar-card">
+                <div class="pillar-icon">⚡</div>
+                <h3>EV Conversion & Servicing</h3>
+                <p>ICE-to-EV conversions, high-voltage diagnostics, battery pack servicing, and motor controller integration.</p>
+            </div>
+
+            <div class="pillar-card">
+                <div class="pillar-icon">⚙️</div>
+                <h3>Engineering & Customization</h3>
+                <p>Performance tuning, ECU remapping, turbo upgrades, infotainment, and bespoke luxury modifications.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- WHY MECHLANDS -->
+<section class="why">
+    <div class="container">
+        <h2 class="section-title">Why Mechlands Garage</h2>
+        <ul class="why-list">
+            <li><strong>Dual capability:</strong> The only workshop in Kenya equipped for both ICE and EV vehicles.</li>
+            <li><strong>Engineering depth:</strong> We don't just replace parts — we diagnose, design, and build.</li>
+            <li><strong>Future-ready:</strong> Positioned for Kenya's EV transition, with ICE cash flow today.</li>
+            <li><strong>Customization focus:</strong> Tuning, conversion, and bespoke work — not just servicing.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- CALL TO ACTION -->
+<section class="cta">
+    <div class="container">
+        <h2>Ready to work with us?</h2>
+        <p>Book a service, discuss a conversion, or explore investment opportunities.</p>
+        <a href="{{ url_for('contact') }}" class="btn btn-primary">Get in Touch</a>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mechlands Garage{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<!-- ===== NAV DROPDOWN SCRIPT ===== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.getElementById('mediaToggle');
+        const menu = document.getElementById('mediaMenu');
+        const dropdown = document.getElementById('mediaDropdown');
+
+        if (!toggle || !menu) return;
+
+        // Toggle on click
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            menu.classList.toggle('open');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!dropdown.contains(e.target)) {
+                menu.classList.remove('open');
+            }
+        });
+
+        // Close when pressing Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                menu.classList.remove('open');
+            }
+        });
+    });
+</script>
+
+<body>
+
+    <!-- ===== NAVIGATION ===== -->
+    <header class="navbar">
+        <div class="container nav-inner">
+            <a href="{{ url_for('home') }}" class="logo">
+                Mechlands<span>Garage</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>
+                    <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">Services</a></li>
+                    <li><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">About us</a></li>
+                    <li><a href="{{ url_for('shop') }}" class="{% if request.endpoint in ['shop', 'shop_category', 'shop_order'] %}active{% endif %}">Shop</a></li>
+                    <li>
+                        <a href="{{ url_for('tools') }}" class="{% if request.endpoint in ['tools', 'loan_calculator', 'insurance_calculator', 'fuel_efficiency', 'ev_vs_ice', 'route_cost', 'maintenance_cost', 'vin_decoder', 'car_compare'] %}active{% endif %}">Tools</a>
+<!--                        <a href="{{ url_for('tools') }}" class="{% if request.endpoint in ['tools', 'loan_calculator', 'insurance_calculator', 'fuel_efficiency', 'ev_vs_ice', 'route_cost', 'maintenance_cost', 'vin_decoder'] %}active{% endif %}">Tools</a>-->
+                    </li>
+                    <li class="dropdown" id="mediaDropdown">
+                        <a href="#" id="mediaToggle" class="{% if request.endpoint in ['blog', 'blog_post', 'events', 'gallery'] %}active{% endif %}">Media ▾</a>
+                        <ul class="dropdown-menu" id="mediaMenu">
+                            <li><a href="{{ url_for('blog') }}" class="{% if request.endpoint in ['blog', 'blog_post'] %}active{% endif %}">Blog</a></li>
+                            <li><a href="{{ url_for('events') }}" class="{% if request.endpoint == 'events' %}active{% endif %}">Events</a></li>
+                            <li><a href="{{ url_for('gallery') }}" class="{% if request.endpoint == 'gallery' %}active{% endif %}">Gallery</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="{{ url_for('car_sales') }}" class="{% if request.endpoint == 'car_sales' %}active{% endif %}">Cars</a></li>
+                    <li><a href="{{ url_for('retrofitting') }}" class="{% if request.endpoint == 'retrofitting' %}active{% endif %}">Retrofitting</a></li>
+                    <li><a href="{{ url_for('investors') }}" class="{% if request.endpoint in ['investors', 'business_plan', 'investor_inquiry'] %}active{% endif %}">Investors</a></li>
+                    <li><a href="{{ url_for('contact') }}" class="btn-nav {% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>
+                </ul>
+                <form method="GET" action="{{ url_for('search') }}" class="nav-search">
+                    <input type="text"
+                           name="q"
+                           placeholder="Search..."
+                           class="nav-search-input"
+                           value="{{ request.args.get('q', '') if request.endpoint == 'search' else '' }}">
+                    <button type="submit" class="nav-search-btn" aria-label="Search">🔍</button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== PAGE CONTENT ===== -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+
+             <a href="{{ url_for('careers') }}">Careers</a>
+
+
+            <p><strong>Mechlands Garage</strong> — ICE Repair and Tuning · EV Conversion · Engineering Innovation </p>
+            <p>Nairobi, Kenya · info@mechlandsgarage.co.ke · +254 719 130 814</p>
+            <p class="small">© 2026 Mechlands Garage. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <title>{% block title %}Mechlands Garage{% endblock %}</title>#}
+{#    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">#}
+{#</head>#}
+{#<body>#}
+{##}
+{#    <!-- ===== NAVIGATION ===== -->#}
+{#    <header class="navbar">#}
+{#        <div class="container nav-inner">#}
+{#            <a href="{{ url_for('home') }}" class="logo">#}
+{#                Mechlands<span>Garage</span>#}
+{#            </a>#}
+{#            <nav>#}
+{#                <ul>#}
+{#                    <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>#}
+{#                    <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">Services</a></li>#}
+{#                    <li><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">About</a></li>#}
+{#                    <li>#}
+{#                        <ul>#}
+{#                            <li><a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a></li>#}
+{#                            <li><a href="{{ url_for('services') }}" class="{% if request.endpoint == 'services' %}active{% endif %}">Services</a></li>#}
+{#                            <li><a href="{{ url_for('about') }}" class="{% if request.endpoint == 'about' %}active{% endif %}">About</a></li>#}
+{#                            <li><a href="{{ url_for('investors') }}" class="{% if request.endpoint in ['investors', 'business_plan', 'investor_inquiry'] %}active{% endif %}">Investors</a></li>#}
+{#                            <li><a href="{{ url_for('contact') }}" class="btn-nav {% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>#}
+{#                        </ul>#}
+{#                        <a href="{{ url_for('investors') }}" class="{% if request.endpoint == 'investors' %}active{% endif %}">Investors</a>#}
+{#                    </li>#}
+{#                    <li><a href="{{ url_for('contact') }}" class="btn-nav {% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>#}
+{#                </ul>#}
+{#            </nav>#}
+{#        </div>#}
+{#    </header>#}
+{##}
+{#    <!-- ===== PAGE CONTENT ===== -->#}
+{#    <main>#}
+{#        {% block content %}{% endblock %}#}
+{#    </main>#}
+{##}
+{#    <!-- ===== FOOTER ===== -->#}
+{#    <footer class="footer">#}
+{#        <div class="container">#}
+{#            <p><strong>Mechlands Garage</strong> — ICE Repair · EV Conversion · Engineering Innovation</p>#}
+{#            <p>Nairobi, Kenya · info@mechlandsgarage.co.ke · +254 XXX XXX XXX</p>#}
+{#            <p class="small">© 2026 Mechlands Garage. All rights reserved.</p>#}
+{#        </div>#}
+{#    </footer>#}
+{##}
+{#</body>#}
+{#</html>#}

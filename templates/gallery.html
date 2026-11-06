@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Gallery</h1>
+        <p class="page-sub">
+            Real work from the Mechlands Garage floor — repairs, conversions, and custom builds.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        {% if items %}
+            <div class="gallery-grid">
+                {% for item in items %}
+                    <div class="gallery-item">
+                        <div class="gallery-image">
+                            <img src="{{ url_for('static', filename='images/gallery/' + item.image) }}"
+                                 alt="{{ item.caption }}"
+                                 onerror="this.style.display='none'; this.parentElement.classList.add('gallery-placeholder');">
+                            <div class="gallery-placeholder-text">Image coming soon</div>
+                        </div>
+                        <div class="gallery-caption">
+                            <span class="gallery-tag">{{ item.category|upper }}</span>
+                            {{ item.caption }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No gallery items yet. Check back soon.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

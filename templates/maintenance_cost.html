@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Maintenance Cost Estimator — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Maintenance Cost Estimator</h1>
+        <p class="page-sub">
+            Estimate the annual cost of keeping your vehicle in good condition.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="calculator-layout">
+
+            <!-- INPUTS -->
+            <div class="calculator-inputs">
+                <h2>Your Vehicle Details</h2>
+
+                <div class="form-group">
+                    <label for="vehicle-type">Vehicle Type</label>
+                    <select id="vehicle-type" class="form-input">
+                        <option value="ice_sedan">ICE — Sedan (Axio, Note, Fielder)</option>
+                        <option value="ice_suv" selected>ICE — SUV (Harrier, X-Trail, CX-5)</option>
+                        <option value="ice_pickup">ICE — Pickup (Hilux, D-Max, Ranger)</option>
+                        <option value="ev">Electric Vehicle</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicle-age">Vehicle Age</label>
+                    <select id="vehicle-age" class="form-input">
+                        <option value="0-3">0 – 3 years</option>
+                        <option value="4-7" selected>4 – 7 years</option>
+                        <option value="8-12">8 – 12 years</option>
+                        <option value="13+">13+ years</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="annual-km">Annual Distance Driven (km)</label>
+                    <input type="number" id="annual-km" class="form-input" value="15000" min="1000" step="500">
+                    <small class="calc-help">Average Kenyan driver: 12,000 – 20,000 km/year.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="usage-intensity">Driving Conditions</label>
+                    <select id="usage-intensity" class="form-input">
+                        <option value="1.00">Mostly highway / smooth roads</option>
+                        <option value="1.15" selected>Mixed city and highway</option>
+                        <option value="1.35">Mostly city traffic / rough roads</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- RESULTS -->
+            <div class="calculator-results">
+                <h2>Your Estimate</h2>
+
+                <div class="calc-result-block primary">
+                    <div class="calc-result-label">Estimated Annual Maintenance</div>
+                    <div class="calc-result-value" id="annual-cost">—</div>
+                    <div class="calc-result-sub" id="annual-cost-sub"></div>
+                </div>
+
+                <div class="calc-result-grid">
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Cost per 10,000 km</div>
+                        <div class="calc-result-value small" id="cost-per-10k">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Monthly Equivalent</div>
+                        <div class="calc-result-value small" id="monthly-cost">—</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #1B2A4A; margin: 25px 0 15px; font-size: 1.1rem;">Cost Breakdown</h3>
+
+                <table class="breakdown-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Annual Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="breakdown-body">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td><strong>Total</strong></td>
+                            <td id="breakdown-total">—</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div class="calc-note" style="margin-top: 20px;">
+                    Estimate based on standard service intervals and typical Kenyan parts and labor costs. Actual costs vary by vehicle condition, driving habits, and parts quality.
+                </div>
+
+                <a href="{{ url_for('contact') }}" class="btn btn-primary" style="width: 100%; text-align: center; margin-top: 20px;">
+                    Book a Service
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const CONFIG = {
+        intervals: {{ config.intervals|tojson }},
+        costsICE: {{ config.costs_ice|tojson }},
+        costsEV: {{ config.costs_ev|tojson }},
+        ageMultipliers: {{ config.age_multipliers|tojson }},
+    };
+
+    const COMPONENT_LABELS = {
+        oil_and_filter: 'Oil & Filter Change',
+        air_filter: 'Air Filter',
+        brake_pads_front: 'Brake Pads (Front)',
+        brake_pads_rear: 'Brake Pads (Rear)',
+        tyres_set: 'Tyres (Set of 4)',
+        battery: 'Battery',
+        suspension_check: 'Suspension Service',
+        transmission_fluid: 'Transmission Fluid',
+        coolant_flush: 'Coolant Flush',
+    };
+
+    const vehicleEl = document.getElementById('vehicle-type');
+    const ageEl = document.getElementById('vehicle-age');
+    const kmEl = document.getElementById('annual-km');
+    const usageEl = document.getElementById('usage-intensity');
+
+    const annualEl = document.getElementById('annual-cost');
+    const annualSubEl = document.getElementById('annual-cost-sub');
+    const per10kEl = document.getElementById('cost-per-10k');
+    const monthlyEl = document.getElementById('monthly-cost');
+    const breakdownBody = document.getElementById('breakdown-body');
+    const breakdownTotal = document.getElementById('breakdown-total');
+
+    function formatKES(n) {
+        if (!isFinite(n) || n === 0) return '—';
+        return 'KES ' + Math.round(n).toLocaleString('en-KE');
+    }
+
+    function getCosts() {
+        return vehicleEl.value === 'ev' ? CONFIG.costsEV : CONFIG.costsICE;
+    }
+
+    function getVehicleMultiplier() {
+        // EV maintenance doesn't scale with age as strongly
+        if (vehicleEl.value === 'ev') {
+            const base = CONFIG.ageMultipliers[ageEl.value] || 1.0;
+            return 1 + ((base - 1) * 0.4);  // 40% of ICE age effect
+        }
+        return CONFIG.ageMultipliers[ageEl.value] || 1.0;
+    }
+
+    function calculate() {
+        const annualKm = parseFloat(kmEl.value) || 0;
+        const costs = getCosts();
+        const ageMultiplier = getVehicleMultiplier();
+        const usageMultiplier = parseFloat(usageEl.value) || 1.0;
+
+        const breakdown = {};
+        let total = 0;
+
+        for (const key in costs) {
+            const costPerService = costs[key];
+            const interval = CONFIG.intervals[key] || 10000;
+
+            if (costPerService === 0) {
+                breakdown[key] = 0;
+                continue;
+            }
+
+            // Number of times this service happens per year
+            const servicesPerYear = annualKm / interval;
+
+            // Annual cost for this component
+            const annualCost = costPerService * servicesPerYear * ageMultiplier * usageMultiplier;
+
+            breakdown[key] = annualCost;
+            total += annualCost;
+        }
+
+        // Display
+        annualEl.textContent = formatKES(total);
+        annualSubEl.textContent = 'Based on ' + annualKm.toLocaleString('en-KE') + ' km/year';
+
+        const per10k = annualKm > 0 ? (total / annualKm) * 10000 : 0;
+        per10kEl.textContent = formatKES(per10k);
+        monthlyEl.textContent = formatKES(total / 12);
+
+        // Breakdown table
+        breakdownBody.innerHTML = '';
+        for (const key in breakdown) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td>' + COMPONENT_LABELS[key] + '</td><td>' + formatKES(breakdown[key]) + '</td>';
+            breakdownBody.appendChild(row);
+        }
+        breakdownTotal.textContent = formatKES(total);
+    }
+
+    [vehicleEl, ageEl, kmEl, usageEl].forEach(el => {
+        el.addEventListener('input', calculate);
+        el.addEventListener('change', calculate);
+    });
+
+    calculate();
+})();
+</script>
+
+{% endblock %}

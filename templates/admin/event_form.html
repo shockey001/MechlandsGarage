@@ -1,0 +1,54 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}{% if event %}Edit{% else %}New{% endif %} Event — Mechlands Admin{% endblock %}
+{% block page_title %}{% if event %}Edit Event{% else %}New Event{% endif %}{% endblock %}
+
+{% block content %}
+
+<form method="POST" class="admin-form">
+    {{ form.hidden_tag() }}
+
+    <div class="admin-form-group">
+        {{ form.title.label }}
+        {{ form.title(class="admin-input", placeholder="Event title") }}
+        {% for e in form.title.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+    </div>
+
+    <div class="admin-form-row">
+        <div class="admin-form-group">
+            {{ form.slug.label }}
+            {{ form.slug(class="admin-input", placeholder="url-friendly-slug") }}
+            {% for e in form.slug.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+        </div>
+        <div class="admin-form-group">
+            {{ form.date.label }}
+            {{ form.date(class="admin-input", placeholder="2026-12-05") }}
+            {% for e in form.date.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+        </div>
+    </div>
+
+    <div class="admin-form-row">
+        <div class="admin-form-group">
+            {{ form.location.label }}
+            {{ form.location(class="admin-input", placeholder="Venue, City") }}
+            {% for e in form.location.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+        </div>
+        <div class="admin-form-group">
+            {{ form.status.label }}
+            {{ form.status(class="admin-input") }}
+        </div>
+    </div>
+
+    <div class="admin-form-group">
+        {{ form.description.label }}
+        {{ form.description(class="admin-input", rows="5", placeholder="Short description of the event.") }}
+        {% for e in form.description.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+    </div>
+
+    <div class="admin-form-actions">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('admin_events') }}" class="btn btn-outline" style="color: #1B2A4A; border-color: #1B2A4A;">Cancel</a>
+    </div>
+</form>
+
+{% endblock %}

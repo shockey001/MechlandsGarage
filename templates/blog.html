@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Blog — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Blog</h1>
+        <p class="page-sub">
+            Technical writing, industry insight, and honest advice from the Mechlands Garage team.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        {% if posts %}
+            <div class="blog-list">
+                {% for post in posts %}
+                    <article class="blog-card">
+                        <div class="blog-date">{{ post.date }}</div>
+                        <h2><a href="{{ url_for('blog_post', slug=post.slug) }}">{{ post.title }}</a></h2>
+                        <p>{{ post.excerpt }}</p>
+                        <a href="{{ url_for('blog_post', slug=post.slug) }}" class="read-more">Read more →</a>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No posts yet. Check back soon.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

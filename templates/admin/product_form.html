@@ -1,0 +1,48 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}{% if product %}Edit{% else %}New{% endif %} Product — Mechlands Admin{% endblock %}
+{% block page_title %}{% if product %}Edit Product{% else %}New Product{% endif %}{% endblock %}
+
+{% block content %}
+
+<form method="POST" class="admin-form">
+    {{ form.hidden_tag() }}
+
+    <div class="admin-form-row">
+        <div class="admin-form-group">
+            {{ form.sku.label }}
+            {{ form.sku(class="admin-input", placeholder="e.g. sp-007") }}
+            <small class="admin-help">A unique code for this product.</small>
+            {% for e in form.sku.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+        </div>
+        <div class="admin-form-group">
+            {{ form.category.label }}
+            {{ form.category(class="admin-input") }}
+        </div>
+    </div>
+
+    <div class="admin-form-group">
+        {{ form.name.label }}
+        {{ form.name(class="admin-input", placeholder="Product name") }}
+        {% for e in form.name.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+    </div>
+
+    <div class="admin-form-group">
+        {{ form.description.label }}
+        {{ form.description(class="admin-input", rows="4", placeholder="Short product description.") }}
+        {% for e in form.description.errors %}<span class="form-error">{{ e }}</span>{% endfor %}
+    </div>
+
+    <div class="admin-form-group">
+        {{ form.price.label }}
+        {{ form.price(class="admin-input", placeholder="e.g. 3500") }}
+        <small class="admin-help">Leave blank to display "Request Price" instead.</small>
+    </div>
+
+    <div class="admin-form-actions">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('admin_products') }}" class="btn btn-outline" style="color: #1B2A4A; border-color: #1B2A4A;">Cancel</a>
+    </div>
+</form>
+
+{% endblock %}

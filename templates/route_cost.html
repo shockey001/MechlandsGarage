@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Route Cost Estimator — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Route Cost Estimator</h1>
+        <p class="page-sub">
+            Estimate the fuel or energy cost of any journey in Kenya.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="calculator-layout">
+
+            <!-- INPUTS -->
+            <div class="calculator-inputs">
+                <h2>Your Journey</h2>
+
+                <div class="form-group">
+                    <label for="start">Starting Point</label>
+                    <input type="text" id="start" class="form-input" placeholder="e.g. Nairobi CBD, Westlands, Thika" value="Nairobi CBD">
+                </div>
+
+                <div class="form-group">
+                    <label for="end">Destination</label>
+                    <input type="text" id="end" class="form-input" placeholder="e.g. Mombasa, Naivasha, Kisumu" value="Mombasa">
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicle-type">Vehicle Type</label>
+                    <select id="vehicle-type" class="form-input">
+                        <option value="petrol_sedan">Petrol Sedan (Axio, Note, Fielder)</option>
+                        <option value="petrol_suv" selected>Petrol SUV (Harrier, X-Trail, CX-5)</option>
+                        <option value="diesel_pickup">Diesel Pickup (Hilux, D-Max, Ranger)</option>
+                        <option value="ev">Electric Vehicle</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="return-trip">
+                        <input type="checkbox" id="return-trip"> Include return journey
+                    </label>
+                </div>
+
+                <button type="button" id="calculate-btn" class="btn btn-primary" style="width: 100%;">
+                    Calculate Route Cost
+                </button>
+
+                <div id="error-message" class="calc-error" style="display: none;"></div>
+
+            </div>
+
+            <!-- RESULTS -->
+            <div class="calculator-results">
+                <h2>Your Estimate</h2>
+
+                <div id="loading" class="calc-loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Calculating route...</p>
+                </div>
+
+                <div id="results" style="display: none;">
+                    <div class="calc-result-block primary">
+                        <div class="calc-result-label">Estimated Trip Cost</div>
+                        <div class="calc-result-value" id="trip-cost">—</div>
+                        <div class="calc-result-sub" id="route-summary"></div>
+                    </div>
+
+                    <div class="calc-result-grid">
+                        <div class="calc-result-block">
+                            <div class="calc-result-label">Distance</div>
+                            <div class="calc-result-value small" id="distance">—</div>
+                        </div>
+                        <div class="calc-result-block">
+                            <div class="calc-result-label">Estimated Time</div>
+                            <div class="calc-result-value small" id="duration">—</div>
+                        </div>
+                        <div class="calc-result-block">
+                            <div class="calc-result-label">Fuel / Energy Cost</div>
+                            <div class="calc-result-value small" id="fuel-cost">—</div>
+                        </div>
+                        <div class="calc-result-block">
+                            <div class="calc-result-label">Cost per KM</div>
+                            <div class="calc-result-value small" id="cost-per-km">—</div>
+                        </div>
+                    </div>
+
+                    <div class="calc-note" style="margin-top: 20px;">
+                        Estimates are indicative. Actual fuel cost depends on driving style, traffic, load, and vehicle condition.
+                    </div>
+                </div>
+
+                <div id="empty-state">
+                    <p class="calc-note" style="text-align: center;">
+                        Enter your route and click <strong>Calculate Route Cost</strong> to see the estimate.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const CONFIG = {
+        petrolPrice: {{ config.petrol_price }},
+        dieselPrice: {{ config.diesel_price }},
+        electricityPrice: {{ config.electricity_price }},
+        petrolSedanConsumption: {{ config.petrol_sedan_consumption }},
+        petrolSuvConsumption: {{ config.petrol_suv_consumption }},
+        dieselPickupConsumption: {{ config.diesel_pickup_consumption }},
+        evConsumption: {{ config.ev_consumption }},
+    };
+
+    const startEl = document.getElementById('start');
+    const endEl = document.getElementById('end');
+    const vehicleEl = document.getElementById('vehicle-type');
+    const returnEl = document.getElementById('return-trip');
+    const btn = document.getElementById('calculate-btn');
+
+    const loadingEl = document.getElementById('loading');
+    const resultsEl = document.getElementById('results');
+    const emptyEl = document.getElementById('empty-state');
+    const errorEl = document.getElementById('error-message');
+
+    const tripCostEl = document.getElementById('trip-cost');
+    const routeSummaryEl = document.getElementById('route-summary');
+    const distanceEl = document.getElementById('distance');
+    const durationEl = document.getElementById('duration');
+    const fuelCostEl = document.getElementById('fuel-cost');
+    const costPerKmEl = document.getElementById('cost-per-km');
+
+    function formatKES(n) {
+        if (!isFinite(n)) return '—';
+        return 'KES ' + Math.round(n).toLocaleString('en-KE');
+    }
+
+    function getVehicleData() {
+        const v = vehicleEl.value;
+        if (v === 'petrol_suv') {
+            return { consumption: CONFIG.petrolSuvConsumption, price: CONFIG.petrolPrice, unit: 'L/100km', fuel: 'petrol' };
+        }
+        if (v === 'diesel_pickup') {
+            return { consumption: CONFIG.dieselPickupConsumption, price: CONFIG.dieselPrice, unit: 'L/100km', fuel: 'diesel' };
+        }
+        if (v === 'ev') {
+            return { consumption: CONFIG.evConsumption, price: CONFIG.electricityPrice, unit: 'kWh/100km', fuel: 'electricity' };
+        }
+        return { consumption: CONFIG.petrolSedanConsumption, price: CONFIG.petrolPrice, unit: 'L/100km', fuel: 'petrol' };
+    }
+
+    function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.style.display = 'block';
+    }
+
+    function clearError() {
+        errorEl.style.display = 'none';
+        errorEl.textContent = '';
+    }
+
+    async function calculate() {
+        clearError();
+
+        const start = startEl.value.trim();
+        const end = endEl.value.trim();
+
+        if (!start || !end) {
+            showError('Please enter both a starting point and a destination.');
+            return;
+        }
+
+        loadingEl.style.display = 'block';
+        resultsEl.style.display = 'none';
+        emptyEl.style.display = 'none';
+
+        try {
+            const response = await fetch('/api/route-distance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ start, end }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to calculate route.');
+            }
+
+            const vehicle = getVehicleData();
+            const oneWayKm = data.distance_km;
+            const totalKm = returnEl.checked ? oneWayKm * 2 : oneWayKm;
+
+            const fuelNeeded = (totalKm / 100) * vehicle.consumption;
+            const fuelCost = fuelNeeded * vehicle.price;
+            const costPerKm = totalKm > 0 ? fuelCost / totalKm : 0;
+
+            tripCostEl.textContent = formatKES(fuelCost);
+            routeSummaryEl.textContent = data.start_label + ' → ' + data.end_label + (returnEl.checked ? ' (return)' : '');
+            distanceEl.textContent = totalKm.toFixed(1) + ' km';
+            durationEl.textContent = (data.duration_hours * (returnEl.checked ? 2 : 1)).toFixed(1) + ' hrs';
+            fuelCostEl.textContent = formatKES(fuelCost);
+            costPerKmEl.textContent = 'KES ' + costPerKm.toFixed(2);
+
+            loadingEl.style.display = 'none';
+            resultsEl.style.display = 'block';
+        } catch (err) {
+            loadingEl.style.display = 'none';
+            emptyEl.style.display = 'block';
+            showError(err.message);
+        }
+    }
+
+    btn.addEventListener('click', calculate);
+
+    // Enter key triggers calculate
+    [startEl, endEl].forEach(el => {
+        el.addEventListener('keypress', e => {
+            if (e.key === 'Enter') calculate();
+        });
+    });
+})();
+</script>
+
+{% endblock %}

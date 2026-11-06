@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}About — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+    <div class="container">
+        <h1>About Mechlands Garage</h1>
+        <p class="page-sub">
+            Building Kenya's first integrated workshop for the transition from combustion to electric.
+        </p>
+    </div>
+</section>
+
+<!-- OUR STORY -->
+<section class="service-section">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">📖</div>
+            <div>
+                <h2>Our Story</h2>
+                <p class="section-intro">Why Mechlands Garage exists.</p>
+            </div>
+        </div>
+
+        <div class="about-content">
+            <p>
+                Kenya's automotive landscape is at a turning point. Electric vehicles are arriving — slowly
+                at first, then faster than most workshops are prepared for. At the same time, millions of
+                petrol and diesel vehicles still need expert repair, tuning, and care for years to come.
+            </p>
+            <p>
+                Most garages can handle one side of that transition or the other. Very few can handle both.
+                Mechlands Garage was founded to close that gap — a workshop that repairs today's vehicles
+                with engineering rigor, while building the skills and infrastructure to convert, service,
+                and innovate on tomorrow's electric ones.
+            </p>
+            <p>
+                We are not a parts-swapping shop. We are an engineering workshop that happens to fix cars.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- OUR PHILOSOPHY -->
+<section class="service-section alt">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">🎯</div>
+            <div>
+                <h2>Our Philosophy</h2>
+                <p class="section-intro">Three principles that guide every job we take on.</p>
+            </div>
+        </div>
+
+        <div class="pillar-grid">
+            <div class="pillar-card">
+                <div class="pillar-icon">🔍</div>
+                <h3>Diagnose First</h3>
+                <p>We identify the real problem before quoting. No guesswork, no unnecessary replacements, no surprises on the invoice.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">🛠️</div>
+                <h3>Engineer the Solution</h3>
+                <p>Standard repairs follow proven procedures. Custom work is designed, tested, and documented — not improvised.</p>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon">📚</div>
+                <h3>Educate the Owner</h3>
+                <p>Every customer leaves knowing what was done, why it mattered, and what to watch for next. Trust is built on understanding.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="service-section">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">👤</div>
+            <div>
+                <h2>The Founder</h2>
+                <p class="section-intro">The person behind Mechlands Garage.</p>
+            </div>
+        </div>
+
+
+
+
+        <div class="about-content">
+            <p>
+                <strong>Gachoki Ndwiga</strong> — Founder & Lead Engineer
+            </p>
+            <p>
+                Gachoki Ndwiga is an automotive electrician with four years of hands-on experience in
+                vehicle electrical systems and automotive wiring. His work spans diagnostics,
+                re-wiring, electrical fault-tracing, and system integration across petrol and diesel
+                vehicles — the foundation on which Mechlands Garage is built.
+            </p>
+            <p>
+                His apprenticeship years gave him something formal training alone cannot: an intimate
+                understanding of how Kenyan vehicles actually fail, how owners actually drive them, and
+                how far a well-engineered repair can extend a vehicle's life. That experience is now
+                being extended into electric vehicle systems — battery management, high-voltage safety,
+                and drivetrain integration — positioning Mechlands Garage to serve both today's vehicles
+                and tomorrow's.
+            </p>
+            <p>
+                Gachoki founded Mechlands Garage to build the kind of workshop he wished existed when he
+                was starting out: one that diagnoses before it quotes, engineers before it replaces, and
+                treats every customer's vehicle as if it were his own.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- THE ROAD AHEAD -->
+<section class="service-section alt">
+    <div class="container">
+        <div class="section-head">
+            <div class="section-icon">🛣️</div>
+            <div>
+                <h2>The Road Ahead</h2>
+                <p class="section-intro">Where Mechlands Garage is going.</p>
+            </div>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-marker">1</div>
+                <div class="timeline-content">
+                    <h4>Foundation</h4>
+                    <p>Establish the workshop, build the ICE repair and parts business, earn a reputation for honest engineering.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-marker">2</div>
+                <div class="timeline-content">
+                    <h4>Specialization</h4>
+                    <p>Introduce advanced diagnostics, performance tuning, and the first EV servicing capabilities.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-marker">3</div>
+                <div class="timeline-content">
+                    <h4>Conversion & Engineering</h4>
+                    <p>Complete our first demonstration ICE-to-EV conversion and begin taking on customer conversion projects.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-marker">4</div>
+                <div class="timeline-content">
+                    <h4>Innovation Lab</h4>
+                    <p>Develop custom battery packs, prototype systems, and local engineering solutions for Kenya's EV market.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+    <div class="container">
+        <h2>Want to be part of the journey?</h2>
+        <p>Whether you're a customer, partner, or investor — there's a place for you at Mechlands Garage.</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('services') }}" class="btn btn-primary">Our Services</a>
+            <a href="{{ url_for('investors') }}" class="btn btn-outline">Partner With Us</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

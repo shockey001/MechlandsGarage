@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Fuel Efficiency Calculator — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Fuel Efficiency Calculator</h1>
+        <p class="page-sub">
+            Calculate your vehicle's fuel consumption, cost per kilometer, and monthly fuel spend.
+        </p>
+    </div>
+</section>
+
+<section class="service-section">
+    <div class="container">
+        <div class="calculator-layout">
+
+            <!-- INPUTS -->
+            <div class="calculator-inputs">
+                <h2>Your Fuel Data</h2>
+
+                <div class="form-group">
+                    <label for="distance">Distance Travelled (km)</label>
+                    <input type="number" id="distance" class="form-input" value="500" min="0" step="1">
+                    <small class="calc-help">Since your last fill-up.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="litres">Fuel Used (litres)</label>
+                    <input type="number" id="litres" class="form-input" value="40" min="0" step="0.1">
+                    <small class="calc-help">Amount added at the pump.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="fuel-price">Fuel Price (KES per litre)</label>
+                    <input type="number" id="fuel-price" class="form-input" value="190" min="0" step="0.5">
+                    <small class="calc-help">Current Kenyan range: KES 180 – 200 (petrol), lower for diesel.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="monthly-km">Monthly Distance (km) — optional</label>
+                    <input type="number" id="monthly-km" class="form-input" value="1200" min="0" step="10">
+                    <small class="calc-help">For estimating monthly and annual fuel cost.</small>
+                </div>
+
+            </div>
+
+            <!-- RESULTS -->
+            <div class="calculator-results">
+                <h2>Your Results</h2>
+
+                <div class="calc-result-block primary">
+                    <div class="calc-result-label">Fuel Consumption</div>
+                    <div class="calc-result-value" id="consumption">—</div>
+                </div>
+
+                <div class="calc-result-grid">
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Cost per KM</div>
+                        <div class="calc-result-value small" id="cost-per-km">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Cost per 100 KM</div>
+                        <div class="calc-result-value small" id="cost-per-100">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Monthly Fuel Cost</div>
+                        <div class="calc-result-value small" id="monthly-cost">—</div>
+                    </div>
+                    <div class="calc-result-block">
+                        <div class="calc-result-label">Annual Fuel Cost</div>
+                        <div class="calc-result-value small" id="annual-cost">—</div>
+                    </div>
+                </div>
+
+                <div class="calc-note" id="efficiency-note">
+                    For reference: most efficient petrol vehicles consume under 6L/100km. Average is 8–12L/100km. Above 15L/100km indicates heavy consumption or a possible mechanical issue.
+                </div>
+
+                <a href="{{ url_for('contact') }}" class="btn btn-primary" style="width: 100%; text-align: center; margin-top: 20px;">
+                    Book a Diagnostic Check
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const distance = document.getElementById('distance');
+    const litres = document.getElementById('litres');
+    const fuelPrice = document.getElementById('fuel-price');
+    const monthlyKm = document.getElementById('monthly-km');
+
+    const consumptionEl = document.getElementById('consumption');
+    const costPerKmEl = document.getElementById('cost-per-km');
+    const costPer100El = document.getElementById('cost-per-100');
+    const monthlyCostEl = document.getElementById('monthly-cost');
+    const annualCostEl = document.getElementById('annual-cost');
+    const noteEl = document.getElementById('efficiency-note');
+
+    function formatKES(n) {
+        if (!isFinite(n)) return '—';
+        return 'KES ' + Math.round(n).toLocaleString('en-KE');
+    }
+
+    function calculate() {
+        const d = parseFloat(distance.value) || 0;
+        const l = parseFloat(litres.value) || 0;
+        const p = parseFloat(fuelPrice.value) || 0;
+        const mkm = parseFloat(monthlyKm.value) || 0;
+
+        if (d === 0 || l === 0) {
+            consumptionEl.textContent = '—';
+            costPerKmEl.textContent = '—';
+            costPer100El.textContent = '—';
+            monthlyCostEl.textContent = '—';
+            annualCostEl.textContent = '—';
+            return;
+        }
+
+        // Consumption in L/100km
+        const perHundred = (l / d) * 100;
+
+        // Consumption in km/L
+        const kmPerL = d / l;
+
+        // Cost per km
+        const costPerKm = p / kmPerL;
+
+        // Cost per 100km
+        const costPer100 = costPerKm * 100;
+
+        // Monthly & annual
+        const monthly = mkm * costPerKm;
+        const annual = monthly * 12;
+
+        // Display L/100km with km/L in parentheses
+        consumptionEl.textContent = perHundred.toFixed(1) + ' L/100km  (' + kmPerL.toFixed(1) + ' km/L)';
+        costPerKmEl.textContent = 'KES ' + costPerKm.toFixed(2);
+        costPer100El.textContent = formatKES(costPer100);
+        monthlyCostEl.textContent = formatKES(monthly);
+        annualCostEl.textContent = formatKES(annual);
+
+        // Dynamic note based on efficiency
+        let note = '';
+        if (perHundred < 6) {
+            note = '✅ Excellent efficiency. Your vehicle is running efficiently.';
+        } else if (perHundred < 9) {
+            note = '✅ Good efficiency. Within normal range for most vehicles.';
+        } else if (perHundred < 12) {
+            note = '⚠️ Average efficiency. Consider a service if this is higher than usual for your vehicle.';
+        } else if (perHundred < 15) {
+            note = '⚠️ High consumption. Worth checking tyre pressure, air filter, and driving habits.';
+        } else {
+            note = '🚨 Very high consumption. Book a diagnostic check — this may indicate a mechanical issue.';
+        }
+        noteEl.textContent = note;
+    }
+
+    [distance, litres, fuelPrice, monthlyKm].forEach(el => {
+        el.addEventListener('input', calculate);
+    });
+
+    calculate();
+})();
+</script>
+
+{% endblock %}

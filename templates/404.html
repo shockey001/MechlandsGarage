@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found — Mechlands Garage{% endblock %}
+
+{% block content %}
+
+<section class="not-found">
+    <div class="container">
+        <h1>404</h1>
+        <p>That page doesn't exist — or it moved.</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
+    </div>
+</section>
+
+{% endblock %}
